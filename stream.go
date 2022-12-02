@@ -9,10 +9,10 @@ import (
 // StreamIterator is an iterator that reads from a file
 type StreamIterator struct {
 	reader     *bufio.Reader
+	pointer    *atomic.Uint64
 	filename   string
 	name       string
 	fileLines  int
-	pointer    *atomic.Uint64
 	roundRobin bool
 }
 
@@ -86,11 +86,6 @@ func (si *StreamIterator) Len() int {
 // Name returns the name of the iterator
 func (si *StreamIterator) Name() string {
 	return si.name
-}
-
-// RoundRobin returns if the iterator is round robin
-func (si *StreamIterator) RoundRobin() bool {
-	return false
 }
 
 // ResetPointer resets the pointer

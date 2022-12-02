@@ -18,9 +18,9 @@ func TestNewStreamIterator(t *testing.T) {
 		filename string
 	}
 	tests := []struct {
+		want     *StreamIterator
 		name     string
 		filename string
-		want     *StreamIterator
 		wantErr  bool
 	}{
 		{

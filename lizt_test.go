@@ -7,8 +7,8 @@ import (
 
 func TestNewManager(t *testing.T) {
 	tests := []struct {
-		name string
 		want *Manager
+		name string
 	}{
 		{
 			name: "TestNewManager_SetsFiles_Correctly",
@@ -36,9 +36,9 @@ func TestManager_AddIter(t *testing.T) {
 	}
 	fs, _ := NewStreamIterator(FilenameOneMillion, false)
 	tests := []struct {
-		name    string
-		fields  fields
 		args    args
+		fields  fields
+		name    string
 		wantErr bool
 	}{
 		{

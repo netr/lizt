@@ -13,9 +13,9 @@ func TestNewSliceIterator(t *testing.T) {
 		lines []string
 	}
 	tests := []struct {
+		want *SliceIterator
 		name string
 		args args
-		want *SliceIterator
 	}{
 		{
 			name: "TestNewSliceIterator_SetsLines_Correctly",

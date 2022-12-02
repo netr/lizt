@@ -7,10 +7,10 @@ import (
 
 // SliceIterator is an iterator that reads from a slice
 type SliceIterator struct {
-	lines      []string
 	pointer    *atomic.Uint64
-	roundRobin bool
 	name       string
+	lines      []string
+	roundRobin bool
 }
 
 // NewSliceIterator returns a new slice iterator
@@ -61,11 +61,6 @@ func (si *SliceIterator) Len() int {
 // Name returns the name of the iterator
 func (si *SliceIterator) Name() string {
 	return si.name
-}
-
-// RoundRobin returns if the iterator is round robin
-func (si *SliceIterator) RoundRobin() bool {
-	return false
 }
 
 // ResetPointer resets the pointer

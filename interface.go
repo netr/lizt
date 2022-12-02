@@ -2,10 +2,9 @@ package lizt
 
 // Iterator is an interface for iterating over a list of lines
 type Iterator interface {
-	Next(count int) ([]string, error)
 	Name() string
 	Len() int
-	RoundRobin() bool
+	Next(count int) ([]string, error)
 }
 
 // PointerIterator is an iterator that has a pointer

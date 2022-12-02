@@ -6,9 +6,9 @@ import "sync/atomic"
 type SeedingIterator struct {
 	Seeder
 	PointerIterator
-	seedAfter   int
 	seeds       *SliceIterator
 	totalSeeded *atomic.Int64
+	seedAfter   int
 }
 
 // NewSeedingIterator returns a new slice iterator
