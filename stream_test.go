@@ -1,45 +1,41 @@
-package lizt
+package lizt_test
 
 import (
 	"errors"
 	"reflect"
 	"strings"
 	"testing"
-)
 
-var (
-	FilenameOneMillion = "test/1000000.txt"
-	FilenameTen        = "test/10.txt"
-	NameNumbers        = "numbers"
+	"git.faze.center/netr/lizt"
 )
 
 func TestNewStreamIterator(t *testing.T) {
-	type args struct {
-		filename string
+	stream, err := lizt.NewStreamIterator(filenameOneMillion, false)
+	if err != nil {
+		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 	tests := []struct {
-		want     *StreamIterator
+		want     *lizt.StreamIterator
 		name     string
 		filename string
 		wantErr  bool
 	}{
 		{
 			name:     "TestNewStreamIterator_SetsLineCount_Correctly",
-			filename: FilenameOneMillion,
-			want: &StreamIterator{
-				fileLines: 999998,
-			},
-			wantErr: false,
+			filename: filenameOneMillion,
+			want:     stream,
+			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
+		t.Parallel()
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewStreamIterator(tt.filename, false)
+			got, err := lizt.NewStreamIterator(tt.filename, false)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewStreamIterator() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got.fileLines, tt.want.fileLines) {
+			if !reflect.DeepEqual(got.Len(), tt.want.Len()) {
 				t.Errorf("NewStreamIterator() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -47,18 +43,18 @@ func TestNewStreamIterator(t *testing.T) {
 }
 
 func TestNewStreamIterator_ShouldAddBothIteratorsCorrectly(t *testing.T) {
-	m := NewManager()
-	f, err := ReadFromFile(FilenameOneMillion)
+	m := lizt.NewManager()
+	f, err := lizt.ReadFromFile(filenameOneMillion)
 	if err != nil {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = m.AddIter(NewSliceIterator(NameNumbers, f, false))
+	err = m.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
 	if err != nil {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	fs, err := NewStreamIterator(FilenameOneMillion, false)
+	fs, err := lizt.NewStreamIterator(filenameOneMillion, false)
 	if err != nil {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
@@ -68,28 +64,28 @@ func TestNewStreamIterator_ShouldAddBothIteratorsCorrectly(t *testing.T) {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	if len(m.files) != 2 {
-		t.Errorf("wanted %d files, got: %d", 2, len(m.files))
+	if m.Len() != 2 {
+		t.Errorf("wanted %d files, got: %d", 2, m.Len())
 	}
 }
 
 func TestStreamIterator_Next(t *testing.T) {
-	m := NewManager()
-	fs, err := NewStreamIterator(FilenameOneMillion, false)
+	mgr := lizt.NewManager()
+	fs, err := lizt.NewStreamIterator(filenameOneMillion, false)
 	if err != nil {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 
-	err = m.AddIter(fs)
+	err = mgr.AddIter(fs)
 	if err != nil {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	first, err := m.Get("1000000").Next(10)
+	first, err := mgr.Get("1000000").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	second, err := m.Get("1000000").Next(10)
+	second, err := mgr.Get("1000000").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
@@ -100,8 +96,8 @@ func TestStreamIterator_Next(t *testing.T) {
 }
 
 func TestStreamIterator_Next_RoundRobin(t *testing.T) {
-	m := NewManager()
-	fs, err := NewStreamIterator(FilenameTen, true)
+	m := lizt.NewManager()
+	fs, err := lizt.NewStreamIterator(filenameTen, true)
 	if err != nil {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
@@ -126,23 +122,23 @@ func TestStreamIterator_Next_RoundRobin(t *testing.T) {
 }
 
 func TestStreamIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
-	m := NewManager()
-	fs, err := NewStreamIterator(FilenameTen, false)
+	mgr := lizt.NewManager()
+	fs, err := lizt.NewStreamIterator(filenameTen, false)
 	if err != nil {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 
-	err = m.AddIter(fs)
+	err = mgr.AddIter(fs)
 	if err != nil {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	_, err = m.Get("10").Next(10)
+	_, err = mgr.Get("10").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	_, err = m.Get("10").Next(10)
-	if !errors.Is(err, ErrNoMoreLines) {
+	_, err = mgr.Get("10").Next(10)
+	if !errors.Is(err, lizt.ErrNoMoreLines) {
 		t.Errorf("wanted ErrNoMoreLines, got error = %v", err)
 	}
 }

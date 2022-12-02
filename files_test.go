@@ -1,11 +1,13 @@
-package lizt
+package lizt_test
 
 import (
 	"testing"
+
+	"git.faze.center/netr/lizt"
 )
 
 func TestCountLines(t *testing.T) {
-	count, err := FileLineCount("test/1000000.txt")
+	count, err := lizt.FileLineCount("test/1000000.txt")
 	if err != nil {
 		t.Error(err)
 	}
@@ -13,18 +15,17 @@ func TestCountLines(t *testing.T) {
 	if count != 999998 {
 		t.Error("Expected 999998 lines, got", count)
 	}
-
 }
 
 func TestRepeatLines(t *testing.T) {
-	lines, err := ReadFromFile("test/1000000.txt")
+	lines, err := lizt.ReadFromFile("test/1000000.txt")
 	if err != nil {
 		t.Error(err)
 	}
 
 	count := 999998
 	times := 10
-	rep := RepeatLines(lines, times)
+	rep := lizt.RepeatLines(lines, times)
 	if len(rep) != count*times {
 		t.Error("Expected", count*times, "lines, got", count)
 	}

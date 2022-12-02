@@ -2,12 +2,17 @@ package lizt
 
 import (
 	"bufio"
+	"fmt"
 	"math/rand"
 	"os"
 )
 
 func OpenFile(filename string) (*os.File, error) {
-	return os.Open(filename)
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("os.Open(): %s -> %w", filename, err)
+	}
+	return f, nil
 }
 
 func ReadFromFile(filename string) ([]string, error) {
@@ -21,7 +26,12 @@ func ReadFromFile(filename string) ([]string, error) {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
-	return lines, scanner.Err()
+
+	if scanner.Err() != nil {
+		return nil, fmt.Errorf("ReadFromFile(): %s -> %w", filename, scanner.Err())
+	}
+
+	return lines, nil
 }
 
 func FileLineCount(filename string) (int, error) {
@@ -35,7 +45,12 @@ func FileLineCount(filename string) (int, error) {
 	for scanner.Scan() {
 		count++
 	}
-	return count, scanner.Err()
+
+	if scanner.Err() != nil {
+		return 0, fmt.Errorf("FileLineCount(): %s -> %w", filename, scanner.Err())
+	}
+
+	return count, nil
 }
 
 func RepeatLines(lines []string, times int) []string {
@@ -65,7 +80,7 @@ func GetDuplicateLines(lines []string) []string {
 func WriteToFile(lines []string, filename string) error {
 	file, err := os.Create(filename)
 	if err != nil {
-		return err
+		return fmt.Errorf("os.Create(): %s -> %w", filename, err)
 	}
 	defer file.Close()
 
@@ -73,7 +88,7 @@ func WriteToFile(lines []string, filename string) error {
 	for _, line := range lines {
 		_, err := writer.WriteString(line + "\n")
 		if err != nil {
-			return err
+			return fmt.Errorf("writer.WriteString(): %s -> %w", filename, err)
 		}
 	}
 	return nil

@@ -1,11 +1,12 @@
-package lizt
+package lizt_test
 
 import (
 	"errors"
 	"reflect"
 	"strings"
-	"sync/atomic"
 	"testing"
+
+	"git.faze.center/netr/lizt"
 )
 
 func TestNewSliceIterator(t *testing.T) {
@@ -13,7 +14,7 @@ func TestNewSliceIterator(t *testing.T) {
 		lines []string
 	}
 	tests := []struct {
-		want *SliceIterator
+		want *lizt.SliceIterator
 		name string
 		args args
 	}{
@@ -22,16 +23,13 @@ func TestNewSliceIterator(t *testing.T) {
 			args: args{
 				lines: []string{"a", "b", "c"},
 			},
-			want: &SliceIterator{
-				lines:   []string{"a", "b", "c"},
-				pointer: new(atomic.Uint64),
-				name:    NameNumbers,
-			},
+			want: lizt.NewSliceIterator(nameNumbers, []string{"a", "b", "c"}, false),
 		},
 	}
 	for _, tt := range tests {
+		t.Parallel()
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSliceIterator(NameNumbers, tt.args.lines, false); !reflect.DeepEqual(got, tt.want) {
+			if got := lizt.NewSliceIterator(nameNumbers, tt.args.lines, false); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewSliceIterator() = %v, want %v", got, tt.want)
 			}
 		})
@@ -39,22 +37,22 @@ func TestNewSliceIterator(t *testing.T) {
 }
 
 func TestNewSliceIterator_Next(t *testing.T) {
-	m := NewManager()
-	f, err := ReadFromFile(FilenameOneMillion)
+	mgr := lizt.NewManager()
+	f, err := lizt.ReadFromFile(filenameOneMillion)
 	if err != nil {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = m.AddIter(NewSliceIterator(NameNumbers, f, false))
+	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
 	if err != nil {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	first, err := m.Get(NameNumbers).Next(10)
+	first, err := mgr.Get(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("SliceIterator.Next() error = %v", err)
 	}
-	second, err := m.Get(NameNumbers).Next(10)
+	second, err := mgr.Get(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("SliceIterator.Next() error = %v", err)
 	}
@@ -65,22 +63,22 @@ func TestNewSliceIterator_Next(t *testing.T) {
 }
 
 func TestSliceIterator_Next_RoundRobin(t *testing.T) {
-	m := NewManager()
-	f, err := ReadFromFile(FilenameTen)
+	mgr := lizt.NewManager()
+	f, err := lizt.ReadFromFile(filenameTen)
 	if err != nil {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = m.AddIter(NewSliceIterator(NameNumbers, f, true))
+	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, true))
 	if err != nil {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	first, err := m.Get(NameNumbers).Next(10)
+	first, err := mgr.Get(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	second, err := m.Get(NameNumbers).Next(10)
+	second, err := mgr.Get(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
@@ -91,24 +89,24 @@ func TestSliceIterator_Next_RoundRobin(t *testing.T) {
 }
 
 func TestSliceIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
-	m := NewManager()
-	f, err := ReadFromFile(FilenameTen)
+	mgr := lizt.NewManager()
+	f, err := lizt.ReadFromFile(filenameTen)
 	if err != nil {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = m.AddIter(NewSliceIterator(NameNumbers, f, false))
+	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
 	if err != nil {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	_, err = m.Get(NameNumbers).Next(10)
+	_, err = mgr.Get(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
 
-	_, err = m.Get(NameNumbers).Next(10)
-	if !errors.Is(err, ErrNoMoreLines) {
+	_, err = mgr.Get(nameNumbers).Next(10)
+	if !errors.Is(err, lizt.ErrNoMoreLines) {
 		t.Errorf("wanted ErrNoMoreLines, got error = %v", err)
 	}
 }

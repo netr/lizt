@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 )
 
-// StreamIterator is an iterator that reads from a file
+// StreamIterator is an iterator that reads from a file.
 type StreamIterator struct {
 	reader     *bufio.Reader
 	pointer    *atomic.Uint64
@@ -16,7 +16,7 @@ type StreamIterator struct {
 	roundRobin bool
 }
 
-// NewStreamIterator returns a new stream iterator
+// NewStreamIterator returns a new stream iterator.
 func NewStreamIterator(filename string, roundRobin bool) (*StreamIterator, error) {
 	count, err := FileLineCount(filename)
 	if err != nil {
@@ -40,7 +40,7 @@ func NewStreamIterator(filename string, roundRobin bool) (*StreamIterator, error
 	}, nil
 }
 
-// Next returns the next line from the iterator
+// Next returns the next line from the iterator.
 func (si *StreamIterator) Next(count int) ([]string, error) {
 	var lines []string
 	fmt.Println("calling")
@@ -68,27 +68,27 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 	return lines, nil
 }
 
-// Pointer returns the current pointer
+// Pointer returns the current pointer.
 func (si *StreamIterator) Pointer() uint64 {
 	return si.pointer.Load()
 }
 
-// Inc increments the pointer
+// Inc increments the pointer.
 func (si *StreamIterator) Inc() {
 	si.pointer.Add(1)
 }
 
-// Len returns the length of the iterator
+// Len returns the length of the iterator.
 func (si *StreamIterator) Len() int {
 	return si.fileLines
 }
 
-// Name returns the name of the iterator
+// Name returns the name of the iterator.
 func (si *StreamIterator) Name() string {
 	return si.name
 }
 
-// ResetPointer resets the pointer
+// ResetPointer resets the pointer.
 func (si *StreamIterator) ResetPointer() {
 	si.pointer.Store(0)
 }

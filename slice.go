@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 )
 
-// SliceIterator is an iterator that reads from a slice
+// SliceIterator is an iterator that reads from a slice.
 type SliceIterator struct {
 	pointer    *atomic.Uint64
 	name       string
@@ -13,7 +13,7 @@ type SliceIterator struct {
 	roundRobin bool
 }
 
-// NewSliceIterator returns a new slice iterator
+// NewSliceIterator returns a new slice iterator.
 func NewSliceIterator(name string, lines []string, roundRobin bool) *SliceIterator {
 	return &SliceIterator{
 		lines:      lines,
@@ -23,7 +23,7 @@ func NewSliceIterator(name string, lines []string, roundRobin bool) *SliceIterat
 	}
 }
 
-// Next returns the next line from the iterator
+// Next returns the next line from the iterator.
 func (si *SliceIterator) Next(count int) ([]string, error) {
 	var lines []string
 	for i := 0; i < count; i++ {
@@ -43,27 +43,27 @@ func (si *SliceIterator) Next(count int) ([]string, error) {
 	return lines, nil
 }
 
-// Pointer returns the current pointer
+// Pointer returns the current pointer.
 func (si *SliceIterator) Pointer() uint64 {
 	return si.pointer.Load()
 }
 
-// Inc increments the pointer
+// Inc increments the pointer.
 func (si *SliceIterator) Inc() {
 	si.pointer.Add(1)
 }
 
-// Len returns the length of the iterator
+// Len returns the length of the iterator.
 func (si *SliceIterator) Len() int {
 	return len(si.lines)
 }
 
-// Name returns the name of the iterator
+// Name returns the name of the iterator.
 func (si *SliceIterator) Name() string {
 	return si.name
 }
 
-// ResetPointer resets the pointer
+// ResetPointer resets the pointer.
 func (si *SliceIterator) ResetPointer() {
 	si.pointer.Store(0)
 }

@@ -1,8 +1,11 @@
 package lizt
 
-import "sync/atomic"
+import (
+	"fmt"
+	"sync/atomic"
+)
 
-// SeedingIterator is an iterator that reads from a slice
+// SeedingIterator is an iterator that reads from a slice.
 type SeedingIterator struct {
 	Seeder
 	PointerIterator
@@ -11,7 +14,7 @@ type SeedingIterator struct {
 	seedAfter   int
 }
 
-// NewSeedingIterator returns a new slice iterator
+// NewSeedingIterator returns a new slice iterator.
 func NewSeedingIterator(p PointerIterator, seeds *SliceIterator, seedAfter int) *SeedingIterator {
 	return &SeedingIterator{
 		PointerIterator: p,
@@ -21,22 +24,22 @@ func NewSeedingIterator(p PointerIterator, seeds *SliceIterator, seedAfter int) 
 	}
 }
 
-// Seeds returns the seeds
+// Seeds returns the seeds.
 func (si *SeedingIterator) Seeds() []string {
 	return si.seeds.lines
 }
 
-// Planted returns how many seeds have been planted
+// Planted returns how many seeds have been planted.
 func (si *SeedingIterator) Planted() int64 {
 	return si.totalSeeded.Load()
 }
 
-// PlantEvery returns how often the seeds are planted
+// PlantEvery returns how often the seeds are planted.
 func (si *SeedingIterator) PlantEvery() int {
 	return si.seedAfter
 }
 
-// Next returns the next line from the iterator and will automatically seed every PlantEvery() lines
+// Next returns the next line from the iterator and will automatically seed every PlantEvery() lines.
 func (si *SeedingIterator) Next(count int) ([]string, error) {
 	var lines []string
 	for i := 0; i < count; i++ {
@@ -50,7 +53,7 @@ func (si *SeedingIterator) Next(count int) ([]string, error) {
 		} else {
 			next, err := si.PointerIterator.Next(1)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("file: %s -> %w", si.Name(), err)
 			}
 			si.Inc()
 			lines = append(lines, next...)
@@ -58,5 +61,4 @@ func (si *SeedingIterator) Next(count int) ([]string, error) {
 	}
 
 	return lines, nil
-
 }
