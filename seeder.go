@@ -11,15 +11,15 @@ type SeedingIterator struct {
 	PointerIterator
 	seeds       *SliceIterator
 	totalSeeded *atomic.Int64
-	seedAfter   int
+	seedEvery   int
 }
 
 // NewSeedingIterator returns a new slice iterator.
-func NewSeedingIterator(p PointerIterator, seeds *SliceIterator, seedAfter int) *SeedingIterator {
+func NewSeedingIterator(p PointerIterator, seeds *SliceIterator, seedEvery int) *SeedingIterator {
 	return &SeedingIterator{
 		PointerIterator: p,
 		seeds:           seeds,
-		seedAfter:       seedAfter,
+		seedEvery:       seedEvery,
 		totalSeeded:     new(atomic.Int64),
 	}
 }
@@ -36,7 +36,7 @@ func (si *SeedingIterator) Planted() int64 {
 
 // PlantEvery returns how often the seeds are planted.
 func (si *SeedingIterator) PlantEvery() int {
-	return si.seedAfter
+	return si.seedEvery
 }
 
 // Next returns the next line from the iterator and will automatically seed every PlantEvery() lines.

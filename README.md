@@ -16,7 +16,7 @@ func main() {
 	seed := lizt.NewSeedingIterator(
 		lizt.NewSliceIterator("numbers", numbers, false),
 		seedIter, // useful for sharing seeder across multiple lists  
-		2,        // seed after
+		2,        // seed every
 	)
 
 	_, err = seed.Next(4)
@@ -45,7 +45,7 @@ func main() {
 	seed := lizt.NewSeedingIterator(
 		stream,
 		seedIter, // useful for sharing seeder across multiple lists  
-		2,        // seed after
+		2,        // seed every
 	)
 
 	_, err = seed.Next(4)
