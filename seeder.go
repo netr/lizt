@@ -12,10 +12,10 @@ type SeedingIterator struct {
 }
 
 // NewSeedingIterator returns a new slice iterator
-func NewSeedingIterator(p PointerIterator, seeds []string, seedAfter int) *SeedingIterator {
+func NewSeedingIterator(p PointerIterator, seeds *SliceIterator, seedAfter int) *SeedingIterator {
 	return &SeedingIterator{
 		PointerIterator: p,
-		seeds:           NewSliceIterator("seeds", seeds, true),
+		seeds:           seeds,
 		seedAfter:       seedAfter,
 		totalSeeded:     new(atomic.Int64),
 	}

@@ -7,7 +7,7 @@ func TestSeeder(t *testing.T) {
 	seeds := []string{"seeder1", "seeder2", "seeder3", "seeder4", "seeder5", "seeder6", "seeder7", "seeder8", "seeder9", "seeder10"}
 	seed := NewSeedingIterator(
 		NewSliceIterator(NameNumbers, numbers, false),
-		seeds, 2,
+		NewSliceIterator("seeds", seeds, true), 2,
 	)
 	next, err := seed.Next(2)
 	if err != nil {

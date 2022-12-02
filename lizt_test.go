@@ -84,7 +84,7 @@ func TestManager_AddSeeder(t *testing.T) {
 	seeds := []string{"seeder1", "seeder2", "seeder3", "seeder4", "seeder5", "seeder6", "seeder7", "seeder8", "seeder9", "seeder10"}
 	seed := NewSeedingIterator(
 		NewSliceIterator(NameNumbers, numbers, false),
-		seeds, 2,
+		NewSliceIterator("seeds", seeds, true), 2,
 	)
 
 	m := NewManager()
@@ -122,5 +122,16 @@ func TestShuffle(t *testing.T) {
 	shuffled := Shuffle(numbers)
 	if reflect.DeepEqual(numbers, shuffled) {
 		t.Errorf("expected %v to be different from %v", numbers, shuffled)
+	}
+}
+
+func TestManager_AddDirIter(t *testing.T) {
+	m := NewManager()
+	err := m.AddDirIter("test/", false)
+	if err != nil {
+		t.Errorf("AddDirIter() error = %v", err)
+	}
+	if m.Len() != 3 {
+		t.Errorf("expected 3, got %d", m.Len())
 	}
 }

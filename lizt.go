@@ -3,6 +3,7 @@ package lizt
 import (
 	"bufio"
 	"errors"
+	"os"
 	"path"
 	"strings"
 )
@@ -27,6 +28,49 @@ func NewManager() *Manager {
 func (m *Manager) AddIter(i Iterator) error {
 	m.files[i.Name()] = i
 	return nil
+}
+
+// Len returns the length of the iterator
+func (m *Manager) Len() int {
+	return len(m.files)
+}
+
+// AddDirIter adds a directory of files to the manager
+func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
+	if !strings.HasSuffix(dir, "/") {
+		dir += "/"
+	}
+
+	files, err := ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		si, err := NewStreamIterator(f, roundRobin)
+		if err != nil {
+			return err
+		}
+		err = m.AddIter(si)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func ReadDir(dir string) ([]string, error) {
+	readDir, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+	var files []string
+	for _, entry := range readDir {
+		if !entry.IsDir() {
+			files = append(files, dir+entry.Name())
+		}
+	}
+	return files, nil
 }
 
 // Get returns the next line from the iterator
