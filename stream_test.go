@@ -78,7 +78,7 @@ func TestStreamIterator_Next(t *testing.T) {
 
 	err = mgr.AddIter(fs)
 	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
+		t.Errorf("AddIter() error = %v", err)
 	}
 
 	first, err := mgr.Get("1000000").Next(10)
@@ -104,7 +104,7 @@ func TestStreamIterator_Next_RoundRobin(t *testing.T) {
 
 	err = m.AddIter(fs)
 	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
+		t.Errorf("AddIter() error = %v", err)
 	}
 
 	first, err := m.Get("10").Next(10)

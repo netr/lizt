@@ -45,7 +45,7 @@ func TestNewSliceIterator_Next(t *testing.T) {
 
 	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
 	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
+		t.Errorf("AddIter() error = %v", err)
 	}
 
 	first, err := mgr.Get(nameNumbers).Next(10)
@@ -71,7 +71,7 @@ func TestSliceIterator_Next_RoundRobin(t *testing.T) {
 
 	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, true))
 	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
+		t.Errorf("AddIter() error = %v", err)
 	}
 
 	first, err := mgr.Get(nameNumbers).Next(10)
@@ -97,7 +97,7 @@ func TestSliceIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 
 	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
 	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
+		t.Errorf("NewSliceIterator() error = %v", err)
 	}
 
 	_, err = mgr.Get(nameNumbers).Next(10)
