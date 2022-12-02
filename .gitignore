@@ -14,5 +14,4 @@ go.work
 
 # large files
 test/10mil.txt
-1000000.txt
 
