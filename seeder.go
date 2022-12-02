@@ -14,12 +14,18 @@ type SeedingIterator struct {
 	seedEvery   int
 }
 
+type SeedingIteratorConfig struct {
+	PointerIterator PointerIterator
+	Seeds           *SliceIterator
+	SeedEvery       int
+}
+
 // NewSeedingIterator returns a new slice iterator.
-func NewSeedingIterator(p PointerIterator, seeds *SliceIterator, seedEvery int) *SeedingIterator {
+func NewSeedingIterator(cfg SeedingIteratorConfig) *SeedingIterator {
 	return &SeedingIterator{
-		PointerIterator: p,
-		seeds:           seeds,
-		seedEvery:       seedEvery,
+		PointerIterator: cfg.PointerIterator,
+		seeds:           cfg.Seeds,
+		seedEvery:       cfg.SeedEvery,
 		totalSeeded:     new(atomic.Int64),
 	}
 }

@@ -8,10 +8,17 @@ import (
 
 func TestSeeder(t *testing.T) {
 	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
+	iter := lizt.NewSliceIterator(nameNumbers, numbers, false)
+
 	seeds := []string{"seeder1", "seeder2", "seeder3", "seeder4", "seeder5", "seeder6", "seeder7", "seeder8", "seeder9", "seeder10"}
+	seedIter := lizt.NewSliceIterator("seeds", seeds, true)
+
 	seed := lizt.NewSeedingIterator(
-		lizt.NewSliceIterator(nameNumbers, numbers, false),
-		lizt.NewSliceIterator("seeds", seeds, true), 2,
+		lizt.SeedingIteratorConfig{
+			PointerIterator: iter,
+			Seeds:           seedIter,
+			SeedEvery:       2,
+		},
 	)
 	next, err := seed.Next(2)
 	if err != nil {
