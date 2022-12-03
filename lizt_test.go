@@ -94,13 +94,13 @@ func TestManager_AddSeeder(t *testing.T) {
 	iter := lizt.NewSliceIterator(nameNumbers, numbers, false)
 
 	seeds := []string{"seeder1", "seeder2", "seeder3", "seeder4", "seeder5", "seeder6", "seeder7", "seeder8", "seeder9", "seeder10"}
-	seedIter := lizt.NewSliceIterator("seeds", seeds, true)
+	seedIter := lizt.NewSliceIterator("seedIter", seeds, true)
 
 	seed := lizt.NewSeedingIterator(
 		lizt.SeedingIteratorConfig{
-			PointerIterator: iter,
-			Seeds:           seedIter,
-			PlantEvery:      2,
+			PointerIter: iter,
+			SeedIter:    seedIter,
+			PlantEvery:  2,
 		},
 	)
 

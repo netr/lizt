@@ -17,7 +17,6 @@ type PointerIterator interface {
 
 // Seeder is an interface for seeding a pointer iterator.
 type Seeder interface {
-	Seeds() []string
 	PlantEvery() int
 	Planted() int64
 }

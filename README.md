@@ -21,9 +21,9 @@ func main() {
 
     seed := lizt.NewSeedingIterator(
         lizt.SeedingIteratorConfig{
-            PointerIterator: numbersIter,
-            Seeds:           seedIter,
-            SeedEvery:       2,
+            PointerIter:   numbersIter,
+            SeedIter:      seedIter,
+            PlantEvery:    2,
         },
     )
     
@@ -65,9 +65,9 @@ func main() {
     
     seed := lizt.NewSeedingIterator(
         lizt.SeedingIteratorConfig{
-            PointerIterator: streamIter,
-            Seeds:           seedIter,
-            SeedEvery:       2,
+	        PointerIter:   streamIter,
+	        SeedIter:      seedIter,
+	        PlantEvery:    2,
         },
     )
     
