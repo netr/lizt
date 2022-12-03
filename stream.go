@@ -43,7 +43,6 @@ func NewStreamIterator(filename string, roundRobin bool) (*StreamIterator, error
 // Next returns the next line from the iterator.
 func (si *StreamIterator) Next(count int) ([]string, error) {
 	var lines []string
-	fmt.Println("calling")
 	for i := 1; i <= count; i++ {
 		txt, err := si.reader.ReadString('\n')
 		if err != nil {
