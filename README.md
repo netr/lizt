@@ -86,4 +86,5 @@ func main() {
 }
 ```
 
-
+## Persistent Wrapper
+See `TestPersistentIterator_Next` and `TestNewPersistentIterator_UsingSeedingIterator_Next` in `persist_test.go` for examples.
