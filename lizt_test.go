@@ -126,7 +126,7 @@ func TestManager_AddDirIter(t *testing.T) {
 	if err != nil {
 		t.Errorf("AddDirIter() error = %v", err)
 	}
-	if mgr.Len() != 3 {
-		t.Errorf("expected 3, got %d", mgr.Len())
+	if mgr.Len() != 2 {
+		t.Errorf("expected 2, got %d", mgr.Len())
 	}
 }
