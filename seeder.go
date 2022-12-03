@@ -45,23 +45,27 @@ func (si *SeedingIterator) PlantEvery() int {
 	return si.seedEvery
 }
 
+func (si *SeedingIterator) IncPlanted() {
+	si.totalSeeded.Add(1)
+}
+
 // Next returns the next line from the iterator and will automatically seed every PlantEvery() lines.
 func (si *SeedingIterator) Next(count int) ([]string, error) {
 	var lines []string
 	for i := 0; i < count; i++ {
-		sent := si.Pointer()
-		if sent > 0 && sent%uint64(si.PlantEvery()) == 0 {
+		sent := si.Pointer() + uint64(si.Planted())
+		if sent%uint64(si.PlantEvery()) == 0 {
 			seed, err := si.seeds.Next(1)
 			if err != nil {
 				return nil, err
 			}
+			si.IncPlanted()
 			lines = append(lines, seed[0])
 		} else {
 			next, err := si.PointerIterator.Next(1)
 			if err != nil {
 				return nil, fmt.Errorf("file: %s -> %w", si.Name(), err)
 			}
-			si.Inc()
 			lines = append(lines, next...)
 		}
 	}

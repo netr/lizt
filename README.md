@@ -10,13 +10,13 @@ import "git.faze.center/netr/lizt"
 
 type IterKey string
 const (
-	IterKeyNumber IterKey = "numbers"   
+	IterKeyNumbers IterKey = "numbers"   
 	IterKeySeeds IterKey = "seeds"
 )
 
 func main() {
     numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
-    numbersIter := lizt.NewSliceIterator(IterKeyNumber, numbers, false)
+    numbersIter := lizt.NewSliceIterator(IterKeyNumbers, numbers, false)
     seedIter := lizt.NewSliceIterator(IterKeySeeds, []string{"seeder1", "seeder2"}, true)
 
     seed := lizt.NewSeedingIterator(
@@ -34,11 +34,11 @@ func main() {
         panic(err)
     }
     
-    _, err = mgr.Get(IterKeyNumber).Next(4)
+    _, err = mgr.Get(IterKeyNumbers).Next(4)
     if err != nil {
         panic(err)
     }
-    // results in ["1", "seeder1", "2", "seeder2"]
+    // results in ["seeder1", "1", "seeder2", "2"]
 }
 ```
 
@@ -82,7 +82,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-    // results in ["{line_1}", "seeder1", "{line_2}", "seeder2"]
+    // results in ["seeder1", "{line_1}", "seeder2", "{line_2}"]
 }
 ```
 

@@ -36,8 +36,8 @@ func (si *SliceIterator) Next(count int) ([]string, error) {
 				return nil, fmt.Errorf("file: %s -> %w", si.name, ErrNoMoreLines)
 			}
 		} else {
-			si.pointer.Add(1)
 			lines = append(lines, si.lines[ptr])
+			si.pointer.Add(1)
 		}
 	}
 	return lines, nil

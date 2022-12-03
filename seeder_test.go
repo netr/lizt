@@ -6,7 +6,7 @@ import (
 	"git.faze.center/netr/lizt"
 )
 
-func TestSeeder(t *testing.T) {
+func TestSeeder_Next(t *testing.T) {
 	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
 	iter := lizt.NewSliceIterator(nameNumbers, numbers, false)
 
@@ -20,14 +20,23 @@ func TestSeeder(t *testing.T) {
 			SeedEvery:       2,
 		},
 	)
-	next, err := seed.Next(2)
+	next, err := seed.Next(6)
 	if err != nil {
 		return
 	}
-	if next[0] != "1" {
-		t.Errorf("expected 1, got %s", next[0])
+
+	expected := map[int]string{
+		0: "seeder1",
+		1: "1",
+		2: "seeder2",
+		3: "2",
+		4: "seeder3",
+		5: "3",
 	}
-	if next[1] != "seeder1" {
-		t.Errorf("expected seeder, got %s", next[1])
+
+	for k, v := range expected {
+		if next[k] != v {
+			t.Errorf("Expected %s, got %s", v, next[k])
+		}
 	}
 }
