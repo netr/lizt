@@ -16,15 +16,18 @@ func OpenFile(filename string) (*os.File, error) {
 }
 
 func ReadFromFile(filename string) ([]string, error) {
+	lc, _ := FileLineCount(filename)
+	idx := 0
+	lines := make([]string, lc)
+
 	file, err := OpenFile(filename)
 	if err != nil {
 		return nil, err
 	}
-
-	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		lines[idx] = scanner.Text()
+		idx++
 	}
 
 	if scanner.Err() != nil {
