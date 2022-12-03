@@ -13,7 +13,6 @@ type PersistentIteratorConfig struct {
 }
 
 func NewPersistentIterator(cfg PersistentIteratorConfig) (*PersistentIterator, error) {
-	// TODO: load pointer from persister and set it on the iterator
 	if val, err := cfg.Persister.Get(cfg.PointerIter.Name()); err == nil {
 		err = cfg.PointerIter.SetPointer(val)
 		if err != nil {
