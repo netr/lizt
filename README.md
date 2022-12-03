@@ -34,7 +34,7 @@ func main() {
         panic(err)
     }
     
-    _, err = mgr.Get(IterKeyNumbers).Next(4)
+    _, err = mgr.MustGet(IterKeyNumbers).Next(4)
     if err != nil {
         panic(err)
     }
@@ -78,7 +78,7 @@ func main() {
         panic(err)
     }
     
-    _, err = mgr.Get(IterKeyExample).Next(4)
+    _, err = mgr.MustGet(IterKeyExample).Next(4)
     if err != nil {
         panic(err)
     }
