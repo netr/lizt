@@ -60,7 +60,10 @@ func (si *SeedingIterator) Next(count int) ([]string, error) {
 		} else {
 			next, err := si.PointerIterator.Next(1)
 			if err != nil {
-				return nil, fmt.Errorf("file: %s -> %w", si.Name(), err)
+				if len(lines) == 0 {
+					return nil, fmt.Errorf("file: %s -> %w", si.Name(), err)
+				}
+				return lines, nil
 			}
 			lines = append(lines, next...)
 		}

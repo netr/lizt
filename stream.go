@@ -48,7 +48,6 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 		txt, err := si.reader.ReadString('\n')
 		if err != nil {
 			if si.roundRobin {
-				fmt.Println("round", len(lines))
 				sr, err := newFileReader(si.filename)
 				if err != nil {
 					return nil, fmt.Errorf("newFileReader: %s -> %w", si.filename, err)
@@ -59,7 +58,10 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 					return nil, fmt.Errorf("ReadString(): %s -> %w", si.filename, err)
 				}
 			} else {
-				return nil, fmt.Errorf("file: %s -> %w", si.filename, ErrNoMoreLines)
+				if len(lines) == 0 {
+					return nil, fmt.Errorf("file: %s -> %w", si.filename, ErrNoMoreLines)
+				}
+				return lines, nil
 			}
 		}
 
