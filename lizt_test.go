@@ -1,7 +1,6 @@
 package lizt_test
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -46,7 +45,6 @@ func TestManager_AddIter(t *testing.T) {
 	if err != nil {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
-	fmt.Println(fs)
 	tests := []struct {
 		args    args
 		fields  fields
@@ -82,8 +80,8 @@ func TestManager_AddIter(t *testing.T) {
 			if err := m.AddIter(tt.args.file); (err != nil) != tt.wantErr {
 				t.Errorf("AddSliceIter() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if m.Get(tt.fields.name) != tt.args.file {
-				t.Errorf("AddSliceIter() error = %v, wantErr %v", m.Get(nameNumbers), tt.args.file)
+			if m.MustGet(tt.fields.name) != tt.args.file {
+				t.Errorf("AddSliceIter() error = %v, wantErr %v", nameNumbers, tt.args.file)
 			}
 		})
 	}
@@ -109,8 +107,8 @@ func TestManager_AddSeeder(t *testing.T) {
 	if err != nil {
 		t.Errorf("AddIter() error = %v", err)
 	}
-	if mgr.Get(nameNumbers).Len() != len(numbers) {
-		t.Errorf("expected %d, got %d", len(numbers), mgr.Get(nameNumbers).Len())
+	if mgr.MustGet(nameNumbers).Len() != len(numbers) {
+		t.Errorf("expected %d, got %d", len(numbers), mgr.MustGet(nameNumbers).Len())
 	}
 }
 

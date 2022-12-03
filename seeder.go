@@ -53,7 +53,7 @@ func (si *SeedingIterator) Next(count int) ([]string, error) {
 		if sent%uint64(si.PlantEvery()) == 0 {
 			seed, err := si.seedIter.Next(1)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("seed iter next: %w", err)
 			}
 			si.inc()
 			lines = append(lines, seed[0])

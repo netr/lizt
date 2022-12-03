@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-var ErrNoMoreLines = errors.New("no more lines")
+var (
+	ErrNoMoreLines = errors.New("no more lines")
+	ErrKeyNotFound = errors.New("key not found")
+)
 
 // Manager manages iterators.
 type Manager struct {
@@ -73,10 +76,15 @@ func ReadDir(dir string) ([]string, error) {
 }
 
 // Get returns the next line from the iterator.
-func (m *Manager) Get(name string) Iterator {
+func (m *Manager) Get(name string) (Iterator, error) {
 	if m.files[name] == nil {
-		return nil
+		return nil, fmt.Errorf("key: %s -> %w", name, ErrKeyNotFound)
 	}
+	return m.files[name], nil
+}
+
+// MustGet returns the next line from the iterator.
+func (m *Manager) MustGet(name string) Iterator {
 	return m.files[name]
 }
 

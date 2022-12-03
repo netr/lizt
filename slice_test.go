@@ -48,11 +48,11 @@ func TestNewSliceIterator_Next(t *testing.T) {
 		t.Errorf("AddIter() error = %v", err)
 	}
 
-	first, err := mgr.Get(nameNumbers).Next(10)
+	first, err := mgr.MustGet(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("SliceIterator.Next() error = %v", err)
 	}
-	second, err := mgr.Get(nameNumbers).Next(10)
+	second, err := mgr.MustGet(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("SliceIterator.Next() error = %v", err)
 	}
@@ -74,11 +74,11 @@ func TestSliceIterator_Next_RoundRobin(t *testing.T) {
 		t.Errorf("AddIter() error = %v", err)
 	}
 
-	first, err := mgr.Get(nameNumbers).Next(10)
+	first, err := mgr.MustGet(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	second, err := mgr.Get(nameNumbers).Next(10)
+	second, err := mgr.MustGet(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
@@ -100,12 +100,12 @@ func TestSliceIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 		t.Errorf("NewSliceIterator() error = %v", err)
 	}
 
-	_, err = mgr.Get(nameNumbers).Next(10)
+	_, err = mgr.MustGet(nameNumbers).Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
 
-	_, err = mgr.Get(nameNumbers).Next(10)
+	_, err = mgr.MustGet(nameNumbers).Next(10)
 	if !errors.Is(err, lizt.ErrNoMoreLines) {
 		t.Errorf("wanted ErrNoMoreLines, got error = %v", err)
 	}

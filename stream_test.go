@@ -81,11 +81,11 @@ func TestStreamIterator_Next(t *testing.T) {
 		t.Errorf("AddIter() error = %v", err)
 	}
 
-	first, err := mgr.Get("1000000").Next(10)
+	first, err := mgr.MustGet("1000000").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	second, err := mgr.Get("1000000").Next(10)
+	second, err := mgr.MustGet("1000000").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
@@ -107,11 +107,11 @@ func TestStreamIterator_Next_RoundRobin(t *testing.T) {
 		t.Errorf("AddIter() error = %v", err)
 	}
 
-	first, err := m.Get("10").Next(10)
+	first, err := m.MustGet("10").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	second, err := m.Get("10").Next(10)
+	second, err := m.MustGet("10").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
@@ -133,11 +133,11 @@ func TestStreamIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 		t.Errorf("AddPointerIter() error = %v", err)
 	}
 
-	_, err = mgr.Get("10").Next(10)
+	_, err = mgr.MustGet("10").Next(10)
 	if err != nil {
 		t.Errorf("StreamIterator.Next() error = %v", err)
 	}
-	_, err = mgr.Get("10").Next(10)
+	_, err = mgr.MustGet("10").Next(10)
 	if !errors.Is(err, lizt.ErrNoMoreLines) {
 		t.Errorf("wanted ErrNoMoreLines, got error = %v", err)
 	}
