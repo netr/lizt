@@ -53,6 +53,12 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 					return nil, fmt.Errorf("newFileReader: %s -> %w", si.filename, err)
 				}
 				si.reader = sr
+
+				err = si.SetPointer(0)
+				if err != nil {
+					return nil, fmt.Errorf("SetPointer: %s -> %w", si.filename, err)
+				}
+
 				txt, err = si.reader.ReadString('\n')
 				if err != nil {
 					return nil, fmt.Errorf("ReadString(): %s -> %w", si.filename, err)
@@ -82,14 +88,16 @@ func (si *StreamIterator) SetPointer(p uint64) error {
 		return fmt.Errorf("pointer: %d / len: %d -> %w", p, si.Len(), ErrPointerOutOfRange)
 	}
 
+	// we can assume if it reaches this line that the reader is not nil and the pointer is in a valid range.
 	si.unsafePointerPairing(p)
 	si.pointer.Store(p)
 	return nil
 }
 
-// unsafePointerPairing create a new reader and iterate through the lines until it reaches the pointer
+// unsafePointerPairing create a new reader and iterate through the lines until it reaches the pointer.
 func (si *StreamIterator) unsafePointerPairing(p uint64) {
 	sr, err := newFileReader(si.filename)
+	// even though this is unsafe, we'll just do nothing if there is an error.
 	if err != nil {
 		return
 	}

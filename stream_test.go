@@ -93,6 +93,11 @@ func TestStreamIterator_Next(t *testing.T) {
 	if reflect.DeepEqual(first, second) {
 		t.Errorf("StreamIterator: expected next `%v` to be different", first)
 	}
+
+	var expected uint64 = 20
+	if fs.Pointer() != expected {
+		t.Errorf("expected pointer to be %d, got %d", expected, fs.Pointer())
+	}
 }
 
 func TestStreamIterator_Next_RoundRobin(t *testing.T) {
@@ -119,6 +124,11 @@ func TestStreamIterator_Next_RoundRobin(t *testing.T) {
 	if !reflect.DeepEqual(first, second) {
 		t.Errorf("expected %s to be %s", strings.Join(first, ","), strings.Join(second, ","))
 	}
+
+	var expected uint64 = 10
+	if fs.Pointer() != expected {
+		t.Errorf("expected pointer to be %d, got %d", expected, fs.Pointer())
+	}
 }
 
 func TestStreamIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
@@ -140,5 +150,10 @@ func TestStreamIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 	_, err = mgr.MustGet("10").Next(10)
 	if !errors.Is(err, lizt.ErrNoMoreLines) {
 		t.Errorf("wanted ErrNoMoreLines, got error = %v", err)
+	}
+
+	var expected uint64 = 10
+	if fs.Pointer() != expected {
+		t.Errorf("expected pointer to be %d, got %d", expected, fs.Pointer())
 	}
 }

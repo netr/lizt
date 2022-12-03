@@ -2,16 +2,19 @@ package lizt
 
 import "fmt"
 
+// PersistentIterator is an iterator that persists the pointer.
 type PersistentIterator struct {
 	Persister
 	PointerIterator
 }
 
+// PersistentIteratorConfig is the config for a persistent iterator.
 type PersistentIteratorConfig struct {
 	PointerIter PointerIterator
 	Persister   Persister
 }
 
+// NewPersistentIterator returns a new persistent iterator. It will set the pointer to the last known pointer.
 func NewPersistentIterator(cfg PersistentIteratorConfig) (*PersistentIterator, error) {
 	if val, err := cfg.Persister.Get(cfg.PointerIter.Name()); err == nil {
 		err = cfg.PointerIter.SetPointer(val)
