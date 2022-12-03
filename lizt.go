@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	ErrNoMoreLines = errors.New("no more lines")
-	ErrKeyNotFound = errors.New("key not found")
+	ErrNoMoreLines       = errors.New("no more lines")
+	ErrKeyNotFound       = errors.New("key not found")
+	ErrPointerOutOfRange = errors.New("pointer out of range")
 )
 
 // Manager manages iterators.

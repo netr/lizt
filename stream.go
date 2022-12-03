@@ -3,6 +3,7 @@ package lizt
 import (
 	"bufio"
 	"fmt"
+	"strings"
 	"sync/atomic"
 )
 
@@ -64,7 +65,8 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 			}
 		}
 
-		lines = append(lines, txt)
+		lines = append(lines, strings.TrimSpace(txt))
+		si.Inc()
 	}
 	return lines, nil
 }
@@ -72,6 +74,30 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 // Pointer returns the current pointer.
 func (si *StreamIterator) Pointer() uint64 {
 	return si.pointer.Load()
+}
+
+// SetPointer sets the current pointer.
+func (si *StreamIterator) SetPointer(p uint64) error {
+	if p > uint64(si.Len()) {
+		return fmt.Errorf("pointer: %d / len: %d -> %w", p, si.Len(), ErrPointerOutOfRange)
+	}
+
+	si.unsafePointerPairing(p)
+	si.pointer.Store(p)
+	return nil
+}
+
+// unsafePointerPairing create a new reader and iterate through the lines until it reaches the pointer
+func (si *StreamIterator) unsafePointerPairing(p uint64) {
+	sr, err := newFileReader(si.filename)
+	if err != nil {
+		return
+	}
+	si.reader = sr
+	var i uint64
+	for i = 0; i < p; i++ {
+		_, _ = si.reader.ReadString('\n')
+	}
 }
 
 // Inc increments the pointer.

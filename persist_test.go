@@ -13,16 +13,19 @@ func TestPersistentIterator_Next(t *testing.T) {
 
 	mem := NewInMemoryPersister()
 
-	p := lizt.NewPersistentIterator(
+	p, err := lizt.NewPersistentIterator(
 		lizt.PersistentIteratorConfig{
 			PointerIter: iter,
 			Persister:   mem,
 		},
 	)
+	if err != nil {
+		t.Errorf("NewPersistentIterator expected no error, got %v", err)
+	}
 
 	next, err := p.Next(5)
 	if err != nil {
-		return
+		t.Errorf("Next expected no error, got %v", err)
 	}
 	if !reflect.DeepEqual(next, numbers[:5]) {
 		t.Errorf("Expected %v, got %v", numbers[:5], next)
@@ -30,6 +33,71 @@ func TestPersistentIterator_Next(t *testing.T) {
 
 	if mem.pointers[nameNumbers] != 5 {
 		t.Errorf("Expected %d, got %d", 5, mem.pointers[nameNumbers])
+	}
+}
+
+func TestPersistentIterator_Slice_Next_ShouldBeOffsetBy_Two_AfterPersistenceInit(t *testing.T) {
+	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
+	iter := lizt.NewSliceIterator(nameNumbers, numbers, false)
+
+	mem := NewInMemoryPersister()
+	mem.pointers[nameNumbers] = 2
+
+	p, err := lizt.NewPersistentIterator(
+		lizt.PersistentIteratorConfig{
+			PointerIter: iter,
+			Persister:   mem,
+		},
+	)
+	if err != nil {
+		t.Errorf("NewPersistentIterator expected no error, got %v", err)
+	}
+
+	next, err := p.Next(5)
+	if err != nil {
+		t.Errorf("Next expected no error, got %v", err)
+	}
+	if !reflect.DeepEqual(next, numbers[2:7]) {
+		t.Errorf("Expected %v, got %v", numbers[2:7], next)
+	}
+
+	if mem.pointers[nameNumbers] != 7 {
+		t.Errorf("Expected %d, got %d", 7, mem.pointers[nameNumbers])
+	}
+}
+
+func TestPersistentIterator_Stream_Next_ShouldBeOffsetBy_Two_AfterPersistenceInit(t *testing.T) {
+	iter, err := lizt.NewStreamIterator(filenameTen, false)
+	if err != nil {
+		t.Errorf("NewStreamIterator expected no error, got %v", err)
+	}
+
+	iterKey := "10"
+	mem := NewInMemoryPersister()
+	mem.pointers[iterKey] = 2
+
+	p, err := lizt.NewPersistentIterator(
+		lizt.PersistentIteratorConfig{
+			PointerIter: iter,
+			Persister:   mem,
+		},
+	)
+	if err != nil {
+		t.Errorf("NewPersistentIterator expected no error, got %v", err)
+	}
+
+	next, err := p.Next(5)
+	if err != nil {
+		t.Errorf("Next expected no error, got %v", err)
+	}
+
+	expected := []string{"c", "d", "e", "f", "g"}
+	if !reflect.DeepEqual(next, expected) {
+		t.Errorf("Expected %v, got %v", expected, next)
+	}
+
+	if mem.pointers[iterKey] != 7 {
+		t.Errorf("Expected %d, got %d", 7, mem.pointers[iterKey])
 	}
 }
 
@@ -49,16 +117,19 @@ func TestNewPersistentIterator_UsingSeedingIterator_Next(t *testing.T) {
 	)
 
 	mem := NewInMemoryPersister()
-	persistIter := lizt.NewPersistentIterator(
+	persistIter, err := lizt.NewPersistentIterator(
 		lizt.PersistentIteratorConfig{
 			PointerIter: seedIter,
 			Persister:   mem,
 		},
 	)
+	if err != nil {
+		t.Errorf("NewPersistentIterator expected no error, got %v", err)
+	}
 
 	next, err := persistIter.Next(6)
 	if err != nil {
-		return
+		t.Errorf("Next expected no error, got %v", err)
 	}
 
 	if !reflect.DeepEqual(next, []string{"seeder1", "1", "seeder2", "2", "seeder3", "3"}) {

@@ -1,5 +1,7 @@
 package lizt
 
+import "fmt"
+
 type PersistentIterator struct {
 	Persister
 	PointerIterator
@@ -10,11 +12,19 @@ type PersistentIteratorConfig struct {
 	Persister   Persister
 }
 
-func NewPersistentIterator(cfg PersistentIteratorConfig) *PersistentIterator {
+func NewPersistentIterator(cfg PersistentIteratorConfig) (*PersistentIterator, error) {
+	// TODO: load pointer from persister and set it on the iterator
+	if val, err := cfg.Persister.Get(cfg.PointerIter.Name()); err == nil {
+		err = cfg.PointerIter.SetPointer(val)
+		if err != nil {
+			return nil, fmt.Errorf("error setting pointer: name: %s / pointer: %d -> %w", cfg.PointerIter.Name(), val, err)
+		}
+	}
+
 	return &PersistentIterator{
 		PointerIterator: cfg.PointerIter,
 		Persister:       cfg.Persister,
-	}
+	}, nil
 }
 
 // Next returns the next line from the iterator.

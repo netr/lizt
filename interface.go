@@ -12,6 +12,7 @@ type PointerIterator interface {
 	Iterator
 	Pointer() uint64
 	Inc()
+	SetPointer(uint64) error
 }
 
 // Seeder is an interface for seeding a pointer iterator.
