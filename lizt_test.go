@@ -100,7 +100,7 @@ func TestManager_AddSeeder(t *testing.T) {
 		lizt.SeedingIteratorConfig{
 			PointerIterator: iter,
 			Seeds:           seedIter,
-			SeedEvery:       2,
+			PlantEvery:      2,
 		},
 	)
 

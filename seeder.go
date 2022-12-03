@@ -9,15 +9,15 @@ import (
 type SeedingIterator struct {
 	Seeder
 	PointerIterator
-	seeds       *SliceIterator
-	totalSeeded *atomic.Int64
-	seedEvery   int
+	seeds        *SliceIterator
+	totalPlanted *atomic.Int64
+	plantEvery   int
 }
 
 type SeedingIteratorConfig struct {
 	PointerIterator PointerIterator
 	Seeds           *SliceIterator
-	SeedEvery       int
+	PlantEvery      int
 }
 
 // NewSeedingIterator returns a new slice iterator.
@@ -25,8 +25,8 @@ func NewSeedingIterator(cfg SeedingIteratorConfig) *SeedingIterator {
 	return &SeedingIterator{
 		PointerIterator: cfg.PointerIterator,
 		seeds:           cfg.Seeds,
-		seedEvery:       cfg.SeedEvery,
-		totalSeeded:     new(atomic.Int64),
+		plantEvery:      cfg.PlantEvery,
+		totalPlanted:    new(atomic.Int64),
 	}
 }
 
@@ -37,16 +37,17 @@ func (si *SeedingIterator) Seeds() []string {
 
 // Planted returns how many seeds have been planted.
 func (si *SeedingIterator) Planted() int64 {
-	return si.totalSeeded.Load()
+	return si.totalPlanted.Load()
 }
 
 // PlantEvery returns how often the seeds are planted.
 func (si *SeedingIterator) PlantEvery() int {
-	return si.seedEvery
+	return si.plantEvery
 }
 
-func (si *SeedingIterator) IncPlanted() {
-	si.totalSeeded.Add(1)
+// inc IncPlanted increments the planted counter.
+func (si *SeedingIterator) inc() {
+	si.totalPlanted.Add(1)
 }
 
 // Next returns the next line from the iterator and will automatically seed every PlantEvery() lines.
@@ -59,7 +60,7 @@ func (si *SeedingIterator) Next(count int) ([]string, error) {
 			if err != nil {
 				return nil, err
 			}
-			si.IncPlanted()
+			si.inc()
 			lines = append(lines, seed[0])
 		} else {
 			next, err := si.PointerIterator.Next(1)

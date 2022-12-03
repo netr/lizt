@@ -17,12 +17,12 @@ func TestSeeder_Next(t *testing.T) {
 		lizt.SeedingIteratorConfig{
 			PointerIterator: iter,
 			Seeds:           seedIter,
-			SeedEvery:       2,
+			PlantEvery:      2,
 		},
 	)
 	next, err := seed.Next(6)
 	if err != nil {
-		return
+		t.Errorf("Expected no error, got %v", err)
 	}
 
 	expected := map[int]string{
@@ -32,6 +32,43 @@ func TestSeeder_Next(t *testing.T) {
 		3: "2",
 		4: "seeder3",
 		5: "3",
+	}
+
+	for k, v := range expected {
+		if next[k] != v {
+			t.Errorf("Expected %s, got %s", v, next[k])
+		}
+	}
+}
+
+func TestSeeder_Next_RoundRobin(t *testing.T) {
+	numbers := []string{"1", "2"}
+	iter := lizt.NewSliceIterator(nameNumbers, numbers, true)
+
+	seeds := []string{"seeder1", "seeder2"}
+	seedIter := lizt.NewSliceIterator("seeds", seeds, true)
+
+	seed := lizt.NewSeedingIterator(
+		lizt.SeedingIteratorConfig{
+			PointerIterator: iter,
+			Seeds:           seedIter,
+			PlantEvery:      2,
+		},
+	)
+	next, err := seed.Next(8)
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+
+	expected := map[int]string{
+		0: "seeder1",
+		1: "1",
+		2: "seeder2",
+		3: "2",
+		4: "seeder1",
+		5: "1",
+		6: "seeder2",
+		7: "2",
 	}
 
 	for k, v := range expected {
