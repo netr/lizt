@@ -87,8 +87,3 @@ func (si *StreamIterator) Len() int {
 func (si *StreamIterator) Name() string {
 	return si.name
 }
-
-// ResetPointer resets the pointer.
-func (si *StreamIterator) ResetPointer() {
-	si.pointer.Store(0)
-}

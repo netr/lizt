@@ -62,8 +62,3 @@ func (si *SliceIterator) Len() int {
 func (si *SliceIterator) Name() string {
 	return si.name
 }
-
-// ResetPointer resets the pointer.
-func (si *SliceIterator) ResetPointer() {
-	si.pointer.Store(0)
-}
