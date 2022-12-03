@@ -8,20 +8,32 @@ lizt is a flexible list/file manager. you can create stream iterators or slice i
 package main
 import "git.faze.center/netr/lizt"
 
+const (
+	IterKeyNumber = "numbers"
+    IterKeySeeds = "seeds"
+)
+
 func main() {
 	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
 
-	seedIter := lizt.NewSliceIterator("seeds", []string{"seeder1", "seeder2"}, true)
+	seedIter := lizt.NewSliceIterator(IterKeySeeds, []string{"seeder1", "seeder2"}, true)
 
 	seed := lizt.NewSeedingIterator(
 		lizt.SeedingIteratorConfig{
-			PointerIterator: lizt.NewSliceIterator("numbers", numbers, false),
+			PointerIterator: lizt.NewSliceIterator(IterKeyNumber, numbers, false),
 			Seeds:           seedIter,
 			SeedEvery:       2,
 		},
 	)
 
-	_, err = seed.Next(4)
+	// initialize and add seeder to manager
+	mgr := lizt.NewManager()
+	err = mgr.AddIter(seed)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = mgr.Get(IterKeyNumber).Next(4)
 	if err != nil {
 		panic(err)
 	}
@@ -35,11 +47,16 @@ func main() {
 package main
 import "git.faze.center/netr/lizt"
 
+const (
+	IterKeyExample = "example"
+	IterKeySeeds = "seeds"
+)
+
 func main() {
-	seedIter := lizt.NewSliceIterator("seeds", []string{"seeder1", "seeder2"}, true)
+	seedIter := lizt.NewSliceIterator(IterKeySeeds, []string{"seeder1", "seeder2"}, true)
 
 	roundRobin := true
-	stream, err := lizt.NewStreamIterator("filename.txt", roundRobin)
+	stream, err := lizt.NewStreamIterator("example.txt", roundRobin)
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +69,14 @@ func main() {
             },
 	)
 
-	_, err = seed.Next(4)
+	// initialize and add seeder to manager
+	mgr := lizt.NewManager()
+	err = mgr.AddIter(seed)
+	if err != nil {
+		panic(err)
+	}
+	
+	_, err = mgr.Get(IterKeyExample).Next(4)
 	if err != nil {
 		panic(err)
 	}
