@@ -10,8 +10,6 @@ var (
 	IterKeySeeds = "seeds"
 )
 
-type IteratorBuilder struct{}
-
 type PointerIteratorBuilder struct {
 	path     string
 	seedIter *SeedingIterator
@@ -40,21 +38,6 @@ func (ib *PointerIteratorBuilder) Slice(name string, lines []string, roundRobin 
 	return ib
 }
 
-func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
-	if ib.seedIter != nil {
-		ib.seedIter.PointerIterator = ib.listIter
-		return ib.seedIter, nil
-	}
-
-	return ib.listIter, nil
-}
-
-type SeedingIteratorBuilder struct {
-	every    int
-	seedIter *SeedingIterator
-	listIter PointerIterator
-}
-
 func (ib *PointerIteratorBuilder) WithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
 	if ib.listIter == nil {
 		panic("no iterator")
@@ -81,7 +64,11 @@ func (ib *PointerIteratorBuilder) WithSeeds(every int, seeds interface{}) (*Seed
 	return nil, errors.New("invalid seeds type")
 }
 
-func (sb SeedingIteratorBuilder) Build() (*SeedingIterator, error) {
-	//sb.seedIter.PointerIterator = sb.listIter
-	return sb.seedIter, nil
+func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
+	if ib.seedIter != nil {
+		ib.seedIter.PointerIterator = ib.listIter
+		return ib.seedIter, nil
+	}
+
+	return ib.listIter, nil
 }

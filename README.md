@@ -3,7 +3,46 @@ lizt is a flexible list/file manager. you can create stream iterators or slice i
 
 ## Usage
 
-### Slice Iterator With Seeder Wrapper
+## Builder Helper Examples
+
+#### Stream Iterator
+```go
+stream, _ := lizt.Builder().Stream("test/10.txt", roundRobin).Build()
+fmt.Println(stream.Next(5))
+// "a", "b", "c", "e", "f"
+```
+
+#### Slice Iterator
+```go
+slice, _ := lizt.Builder().Slice([]string{"a", "b", "c", "d", "e"}).Build()
+fmt.Println(slice.Next(3))
+// "a", "b", "c"
+```
+
+#### Seeding Stream Iterator with Seed Slice Iterator
+```go
+plantEvery := 2
+seedStream, _ = lizt.Builder().
+Stream("test/10.txt", roundRobin).
+WithSeeds(plantEvery, []string{"seed1", "seed2"})
+
+fmt.Println(slice.Next(4))
+// "seed1", "a", "seed2", "b"
+```
+
+#### Seeding Slice Iterator with Seed Stream Iterator
+```go
+plantEvery := 2
+seedStream, _ = lizt.Builder().
+            Stream("test/10.txt", roundRobin).
+            WithSeeds(plantEvery, "data/seeds.txt")
+
+fmt.Println(slice.Next(4))
+// "seed1", "a", "seed2", "b"
+	
+```
+
+## Slice Iterator With Seeder Wrapper
 ```go
 package main
 import "git.faze.center/netr/lizt"
@@ -42,8 +81,7 @@ func main() {
 }
 ```
 
-
-### Stream Iterator With Seeder Wrapper
+## Stream Iterator With Seeder Wrapper
 ```go
 package main
 import "git.faze.center/netr/lizt"
