@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/dnephin/pre-commit-golang
-  rev: master
+  rev: c17f835cf9f04b8b5ed1c1f7757cedc6728d8a21
   hooks:
     - id: go-fmt
     - id: go-vet
