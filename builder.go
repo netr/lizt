@@ -20,7 +20,7 @@ func NewBuilder() *PointerIteratorBuilder {
 	return &PointerIteratorBuilder{}
 }
 
-func Builder() *PointerIteratorBuilder {
+func B() *PointerIteratorBuilder {
 	return NewBuilder()
 }
 

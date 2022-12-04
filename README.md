@@ -7,14 +7,14 @@ lizt is a flexible list/file manager. you can create stream iterators or slice i
 
 #### Stream Iterator
 ```go
-stream, _ := lizt.Builder().Stream("test/10.txt", roundRobin).Build()
+stream, _ := lizt.NewBuilder().Stream("test/10.txt", roundRobin).Build()
 fmt.Println(stream.Next(5))
 // "a", "b", "c", "e", "f"
 ```
 
 #### Slice Iterator
 ```go
-slice, _ := lizt.Builder().Slice("name", []string{"a", "b", "c", "d", "e"}, roundRobin).Build()
+slice, _ := lizt.B().Slice("name", []string{"a", "b", "c", "d", "e"}, roundRobin).Build()
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
@@ -22,7 +22,7 @@ fmt.Println(slice.Next(3))
 #### Seeding Stream Iterator with Seed Slice Iterator
 ```go
 plantEvery := 2
-seedStream, _ = lizt.Builder().
+seedStream, _ = lizt.B().
             Stream("test/10.txt", roundRobin).
             BuildWithSeeds(plantEvery, []string{"seed1", "seed2"})
 
@@ -33,7 +33,7 @@ fmt.Println(slice.Next(4))
 #### Seeding Slice Iterator with Seed Stream Iterator
 ```go
 plantEvery := 2
-seedStream, _ = lizt.Builder().
+seedStream, _ = lizt.B().
             Stream("test/10.txt", roundRobin).
             BuildWithSeeds(plantEvery, "data/seeds.txt")
 

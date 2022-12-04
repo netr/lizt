@@ -7,7 +7,7 @@ import (
 )
 
 func Test_NewIteratorBuilder_WithSeeds(t *testing.T) {
-	si, err := lizt.Builder().
+	si, err := lizt.B().
 		Stream("test/10.txt", true).
 		BuildWithSeeds(2, []string{"seed1", "seed2", "seed3"})
 
@@ -31,7 +31,7 @@ func Test_NewIteratorBuilder_WithSeeds(t *testing.T) {
 }
 
 func Test_NewIteratorBuilder_Build(t *testing.T) {
-	si, err := lizt.Builder().
+	si, err := lizt.B().
 		Stream("test/10.txt", true).
 		Build()
 
