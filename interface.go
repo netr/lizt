@@ -12,6 +12,7 @@ type PointerIterator interface {
 	Iterator
 	Pointer() uint64
 	Inc()
+	SetPointer(uint64) error
 }
 
 // Seeder is an interface for seeding a pointer iterator.
@@ -22,6 +23,6 @@ type Seeder interface {
 
 // Persister adds persistent storage to an iterator.
 type Persister interface {
-	Set(key, value string) error
-	Get(key string) (string, error)
+	Set(key string, value uint64) error
+	Get(key string) (uint64, error)
 }

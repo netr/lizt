@@ -40,7 +40,7 @@ func (si *SeedingIterator) PlantEvery() int {
 	return si.plantEvery
 }
 
-// inc IncPlanted increments the planted counter.
+// inc increments the total planted counter.
 func (si *SeedingIterator) inc() {
 	si.totalPlanted.Add(1)
 }
@@ -65,7 +65,7 @@ func (si *SeedingIterator) Next(count int) ([]string, error) {
 				}
 				return lines, nil
 			}
-			lines = append(lines, next...)
+			lines = append(lines, next[0])
 		}
 	}
 

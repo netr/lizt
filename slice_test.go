@@ -43,7 +43,9 @@ func TestNewSliceIterator_Next(t *testing.T) {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
+	si := lizt.NewSliceIterator(nameNumbers, f, false)
+
+	err = mgr.AddIter(si)
 	if err != nil {
 		t.Errorf("AddIter() error = %v", err)
 	}
@@ -60,6 +62,11 @@ func TestNewSliceIterator_Next(t *testing.T) {
 	if reflect.DeepEqual(first, second) {
 		t.Errorf("SliceIterator: expected next `%v` to be different", first)
 	}
+
+	var expected uint64 = 20
+	if si.Pointer() != expected {
+		t.Errorf("expected pointer to be %d, got %d", expected, si.Pointer())
+	}
 }
 
 func TestSliceIterator_Next_RoundRobin(t *testing.T) {
@@ -69,7 +76,8 @@ func TestSliceIterator_Next_RoundRobin(t *testing.T) {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, true))
+	si := lizt.NewSliceIterator(nameNumbers, f, true)
+	err = mgr.AddIter(si)
 	if err != nil {
 		t.Errorf("AddIter() error = %v", err)
 	}
@@ -86,6 +94,11 @@ func TestSliceIterator_Next_RoundRobin(t *testing.T) {
 	if !reflect.DeepEqual(first, second) {
 		t.Errorf("expected %s to be %s", strings.Join(first, ","), strings.Join(second, ","))
 	}
+
+	var expected uint64 = 10
+	if si.Pointer() != expected {
+		t.Errorf("expected pointer to be %d, got %d", expected, si.Pointer())
+	}
 }
 
 func TestSliceIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
@@ -95,7 +108,8 @@ func TestSliceIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = mgr.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
+	si := lizt.NewSliceIterator(nameNumbers, f, false)
+	err = mgr.AddIter(si)
 	if err != nil {
 		t.Errorf("NewSliceIterator() error = %v", err)
 	}
@@ -108,5 +122,10 @@ func TestSliceIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 	_, err = mgr.MustGet(nameNumbers).Next(10)
 	if !errors.Is(err, lizt.ErrNoMoreLines) {
 		t.Errorf("wanted ErrNoMoreLines, got error = %v", err)
+	}
+
+	var expected uint64 = 10
+	if si.Pointer() != expected {
+		t.Errorf("expected pointer to be %d, got %d", expected, si.Pointer())
 	}
 }
