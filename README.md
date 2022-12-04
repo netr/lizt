@@ -161,3 +161,45 @@ func main() {
     // results in ["1", "2", "3", "4"]
 }
 ```
+
+### Adding an entire directory using AddDirIter
+All files in the directory will be added to the manager. The key will be the filename of the file. I.e. `test/50000000.txt` will be found at `mgr.Get("50000000")`
+These will always be created as `SliceIterators.`
+```go
+package main
+import "git.faze.center/netr/lizt"
+
+func main() {
+	mgr := lizt.NewManager()
+	// (path, round-robin)
+	err := mgr.AddDirIter("data/", true)
+	if err != nil {
+		panic(err)
+	}
+	_, err = mgr.Get("filename")
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+### Adding an entire directory using SmartAddDirIter
+All files in the directory will be added to the manager. 
+These will be `SliceIterators` if the file is less than 1000 lines. Otherwise, they will be `StreamIterators.`This decision is based around the benchmarks. There's a considerable difference in speed when it comes to smaller lists. The streams perform consistently, regardless of the volume of items they have, after a certain amount of lines.
+```go
+package main
+import "git.faze.center/netr/lizt"
+
+func main() {
+	mgr := lizt.NewManager()
+	// (path, round-robin)
+	err := mgr.SmartAddDirIter("data/", true)
+	if err != nil {
+        panic(err)
+	}
+	_, err = mgr.Get("filename")
+	if err != nil {
+		panic(err) 
+	}
+}
+```
