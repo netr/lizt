@@ -5,7 +5,7 @@ lizt is a flexible list/file manager. you can create stream iterators or slice i
 
 ## Builder Helper Examples
 
-#### Stream Iterator
+#### File Stream Iterator
 ```go
 stream, _ := lizt.NewBuilder().Stream("test/10.txt").Build() // round-robin = false
 fmt.Println(stream.Next(5))
@@ -37,7 +37,7 @@ fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
 
-#### Seeding Stream Iterator with Seed Slice Iterator
+#### Seeding File Stream Iterator with Seed Iterator as a Slice
 ```go
 plantEvery := 2
 seedStream, _ = lizt.B().
@@ -52,7 +52,7 @@ fmt.Println(slice.Next(4))
 // "seed1", "a", "seed2", "b"
 ```
 
-#### Seeding Slice Iterator with Seed Stream Iterator
+#### Seeding Slice Iterator with Seed Iterator as a File Stream
 ```go
 plantEvery := 2
 seedStream, _ = lizt.B().
@@ -68,7 +68,7 @@ fmt.Println(slice.Next(4))
 	
 ```
 
-## Slice Iterator With Seeder Wrapper
+## Slice Iterator With SeedingIterator Wrapper
 ```go
 package main
 import "git.faze.center/netr/lizt"
@@ -107,7 +107,7 @@ func main() {
 }
 ```
 
-## Stream Iterator With Seeder Wrapper
+## File Stream Iterator With SeedingIterator Wrapper
 ```go
 package main
 import "git.faze.center/netr/lizt"
