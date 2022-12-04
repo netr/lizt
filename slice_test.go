@@ -165,38 +165,3 @@ func TestSliceIterator_Next_Parallel(t *testing.T) {
 		t.Errorf("expected %v, got %v", letters, results)
 	}
 }
-
-func TestStreamIterator_Next_Parallel(t *testing.T) {
-	b, err := lizt.B().StreamRR("test/10.txt").Build()
-	if err != nil {
-		t.Errorf("Build() error = %v", err)
-	}
-
-	res := make(chan string, b.Len()*3)
-	wg := &sync.WaitGroup{}
-	wg.Add(30)
-	for i := 0; i < b.Len()*3; i++ {
-		go func(w *sync.WaitGroup, ch chan string) {
-			x, err := b.Next(1)
-			if err != nil {
-				t.Errorf("Next() error = %v", err)
-			}
-			ch <- x[0]
-			w.Done()
-		}(wg, res)
-	}
-	wg.Wait()
-	close(res)
-
-	var results []string
-	for msg := range res {
-		results = append(results, msg)
-	}
-	sort.Strings(results)
-	expected := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}
-	sort.Strings(expected)
-
-	if !reflect.DeepEqual(results, expected) {
-		t.Errorf("expected %v, got %v", expected, results)
-	}
-}
