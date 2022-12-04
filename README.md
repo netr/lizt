@@ -7,21 +7,32 @@ lizt is a flexible list/file manager. you can create stream iterators or slice i
 
 #### Stream Iterator
 ```go
-stream, _ := lizt.NewBuilder().Stream("test/10.txt", roundRobin).Build()
+stream, _ := lizt.NewBuilder().Stream("test/10.txt").Build() // round-robin = false
+fmt.Println(stream.Next(5))
+// "a", "b", "c", "e", "f"
+
+stream, _ := lizt.NewBuilder().StreamRR("test/10.txt").Build() // round-robin = true
 fmt.Println(stream.Next(5))
 // "a", "b", "c", "e", "f"
 ```
 
 #### Slice Iterator
 ```go
-slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}, roundRobin).Build() // creates a random string name for ease of use
+slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to false for ease of use
+fmt.Println(slice.Next(3))
+
+slice, _ := lizt.B().SliceRR([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to false for ease of use
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
 
 #### Slice Iterator With Name (Required if you're using a Manager)
 ```go
-slice, _ := lizt.B().SliceWithName("name", []string{"a", "b", "c", "d", "e"}, roundRobin).Build()
+slice, _ := lizt.B().SliceNamed("name", []string{"a", "b", "c", "d", "e"}).Build()
+fmt.Println(slice.Next(3))
+// "a", "b", "c"
+
+slice, _ := lizt.B().SliceNamedRR("name", []string{"a", "b", "c", "d", "e"}).Build()
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
@@ -30,7 +41,11 @@ fmt.Println(slice.Next(3))
 ```go
 plantEvery := 2
 seedStream, _ = lizt.B().
-            Stream("test/10.txt", roundRobin).
+            Stream("test/10.txt").
+            BuildWithSeeds(plantEvery, []string{"seed1", "seed2"})
+
+seedStream, _ = lizt.B().
+            StreamRR("test/10.txt").
             BuildWithSeeds(plantEvery, []string{"seed1", "seed2"})
 
 fmt.Println(slice.Next(4))
@@ -41,7 +56,11 @@ fmt.Println(slice.Next(4))
 ```go
 plantEvery := 2
 seedStream, _ = lizt.B().
-            Stream("test/10.txt", roundRobin).
+            Stream("test/10.txt").
+            BuildWithSeeds(plantEvery, "data/seeds.txt")
+
+seedStream, _ = lizt.B().
+            StreamRR("test/10.txt").
             BuildWithSeeds(plantEvery, "data/seeds.txt")
 
 fmt.Println(slice.Next(4))

@@ -24,8 +24,9 @@ func B() *PointerIteratorBuilder {
 	return NewBuilder()
 }
 
-func (ib *PointerIteratorBuilder) Stream(path string, roundRobin bool) *PointerIteratorBuilder {
-	stream, err := NewStreamIterator(path, roundRobin)
+// Stream creates a new StreamIterator.
+func (ib *PointerIteratorBuilder) Stream(path string) *PointerIteratorBuilder {
+	stream, err := NewStreamIterator(path, false)
 	if err != nil {
 		panic(err)
 	}
@@ -33,15 +34,37 @@ func (ib *PointerIteratorBuilder) Stream(path string, roundRobin bool) *PointerI
 	return ib
 }
 
-// Slice creates a new SliceIterator. Note that this randomizes the name and won't work while using a Manager. Use SliceWithName instead.
-func (ib *PointerIteratorBuilder) Slice(lines []string, roundRobin bool) *PointerIteratorBuilder {
-	ib.listIter = NewSliceIterator(randomString(8), lines, roundRobin)
+// StreamRR creates a new StreamIterator with round-robin.
+func (ib *PointerIteratorBuilder) StreamRR(path string) *PointerIteratorBuilder {
+	stream, err := NewStreamIterator(path, true)
+	if err != nil {
+		panic(err)
+	}
+	ib.listIter = stream
 	return ib
 }
 
-// SliceWithName creates a new SliceIterator with a name.
-func (ib *PointerIteratorBuilder) SliceWithName(name string, lines []string, roundRobin bool) *PointerIteratorBuilder {
+// Slice creates a new SliceIterator. Note that this randomizes the name and won't work while using a Manager. Use SliceNamed instead.
+func (ib *PointerIteratorBuilder) Slice(lines []string) *PointerIteratorBuilder {
+	ib.listIter = NewSliceIterator(randomString(8), lines, false)
+	return ib
+}
+
+// SliceRR creates a new SliceIterator with round-robin. Note that this randomizes the name and won't work while using a Manager. Use SliceNamed instead.
+func (ib *PointerIteratorBuilder) SliceRR(lines []string) *PointerIteratorBuilder {
+	ib.listIter = NewSliceIterator(randomString(8), lines, true)
+	return ib
+}
+
+// SliceNamed creates a new SliceIterator with a name.
+func (ib *PointerIteratorBuilder) SliceNamed(name string, lines []string, roundRobin bool) *PointerIteratorBuilder {
 	ib.listIter = NewSliceIterator(name, lines, roundRobin)
+	return ib
+}
+
+// SliceNamedRR creates a new SliceIterator with a name and round-robin.
+func (ib *PointerIteratorBuilder) SliceNamedRR(name string, lines []string) *PointerIteratorBuilder {
+	ib.listIter = NewSliceIterator(name, lines, true)
 	return ib
 }
 
