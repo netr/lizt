@@ -52,12 +52,13 @@ func (si *SliceIterator) Pointer() uint64 {
 }
 
 // SetPointer sets the current pointer.
-func (si *SliceIterator) SetPointer(p uint64) error {
+func (si *SliceIterator) SetPointer(p uint64) {
 	if p > uint64(si.Len()) {
-		return fmt.Errorf("pointer: %d / len: %d -> %w", p, si.Len(), ErrPointerOutOfRange)
+		si.pointer.Store(0)
+		return
 	}
 	si.pointer.Store(p)
-	return nil
+	return
 }
 
 // Inc increments the pointer.
