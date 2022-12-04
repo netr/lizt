@@ -98,3 +98,63 @@ func Test_NewIteratorBuilder_Stream_Build(t *testing.T) {
 		t.Errorf("Builder.Next() = %v, want %v", next, expected)
 	}
 }
+
+func Test_NewIteratorBuilder_PersistTo_Stream_Build(t *testing.T) {
+	mem := NewInMemoryPersister()
+
+	si, err := lizt.B().
+		StreamRR("test/10.txt").
+		PersistTo(mem).
+		Build()
+	if err != nil {
+		t.Errorf("Builder() error = %v", err)
+	}
+
+	next, err := si.Next(5)
+	if err != nil {
+		t.Errorf("Builder.Next() error = %v", err)
+	}
+
+	if len(next) != 5 {
+		t.Errorf("Builder.Next() len = %v, want %v", len(next), 5)
+	}
+
+	expected := []string{"a", "b", "c", "d", "e"}
+	if !reflect.DeepEqual(next, expected) {
+		t.Errorf("Builder.Next() = %v, want %v", next, expected)
+	}
+
+	if reflect.DeepEqual(mem.pointers["10"], 5) {
+		t.Errorf("Builder.Next() = %v, want %v", mem.pointers["10"], 5)
+	}
+}
+
+func Test_NewIteratorBuilder_PersistTo_Stream_WithSeeds(t *testing.T) {
+	mem := NewInMemoryPersister()
+
+	si, err := lizt.B().
+		StreamRR("test/10.txt").
+		PersistTo(mem).
+		BuildWithSeeds(2, []string{"seed1", "seed2", "seed3"})
+	if err != nil {
+		t.Errorf("Builder() error = %v", err)
+	}
+
+	next, err := si.Next(5)
+	if err != nil {
+		t.Errorf("Builder.Next() error = %v", err)
+	}
+
+	if len(next) != 5 {
+		t.Errorf("Builder.Next() len = %v, want %v", len(next), 5)
+	}
+
+	expected := []string{"seed1", "a", "seed2", "b", "seed3"}
+	if !reflect.DeepEqual(next, expected) {
+		t.Errorf("Builder.Next() = %v, want %v", next, expected)
+	}
+
+	if reflect.DeepEqual(mem.pointers["10"], 3) {
+		t.Errorf("Builder.Next() = %v, want %v", mem.pointers["10"], 3)
+	}
+}

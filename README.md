@@ -70,6 +70,36 @@ fmt.Println(slice.Next(4))
 	
 ```
 
+#### File Stream Iterator with Persistence ( See `persist_test.go` for more examples )
+```go
+mem := NewInMemoryPersister()
+stream, _ := lizt.NewBuilder().Stream("test/10.txt").PersistTo(mem).Build() // round-robin = false
+fmt.Println(stream.Next(5))
+// "a", "b", "c", "e", "f"
+
+// See `persist_test.go` for more examples
+mem := NewInMemoryPersister()
+stream, _ := lizt.NewBuilder().StreamRR("test/10.txt").PersistTo(mem).Build() // round-robin = true
+fmt.Println(stream.Next(5))
+// "a", "b", "c", "e", "f"
+```
+
+#### Slice Iterator with Persistence ( See `persist_test.go` for more examples )
+```go
+mem := NewInMemoryPersister()
+stream, _ := lizt.NewBuilder().Slice([]{"test","this","here"}).PersistTo(mem).Build() // round-robin = false
+fmt.Println(stream.Next(3))
+// "test", "this", "here"
+// mem["10"] = 3
+
+// See `persist_test.go` for more examples
+mem := NewInMemoryPersister()
+stream, _ := lizt.NewBuilder().SliceRR([]{"test","this","here"}).PersistTo(mem).Build() // round-robin = true
+fmt.Println(stream.Next(6))
+// "test", "this", "here", "test", "this", "here"
+// mem["10"] = 3
+```
+
 ## Slice Iterator With SeedingIterator Wrapper
 ```go
 package main

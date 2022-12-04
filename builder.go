@@ -3,6 +3,7 @@ package lizt
 import (
 	"errors"
 	"fmt"
+	"log"
 	"math/rand"
 	"reflect"
 )
@@ -10,10 +11,9 @@ import (
 var IterKeySeeds = "seeds"
 
 type PointerIteratorBuilder struct {
-	path      string
-	seedIter  *SeedingIterator
-	listIter  PointerIterator
-	persister Persister
+	path     string
+	seedIter *SeedingIterator
+	listIter PointerIterator
 }
 
 func NewBuilder() *PointerIteratorBuilder {
@@ -73,6 +73,7 @@ var (
 	ErrInvalidSeedType = errors.New("invalid seed type")
 )
 
+// BuildWithSeeds will build a pointer iterator with the given iterator and seeds.
 func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
 	if ib.listIter == nil {
 		return nil, fmt.Errorf("builder: %w", ErrNoIterator)
@@ -100,6 +101,7 @@ func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (
 	return nil, fmt.Errorf("builder: %w", ErrInvalidSeedType)
 }
 
+// Build will build a pointer iterator with the given iterators.
 func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 	if ib.seedIter != nil {
 		ib.seedIter.PointerIterator = ib.listIter
@@ -107,6 +109,96 @@ func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 	}
 
 	return ib.listIter, nil
+}
+
+// PersistentIteratorBuilder is a builder for a PersistentIterator.
+type PersistentIteratorBuilder struct {
+	*PointerIteratorBuilder
+	persister Persister
+}
+
+// PersistTo creates a new PersistentIteratorBuilder.
+func (ib *PointerIteratorBuilder) PersistTo(p Persister) *PersistentIteratorBuilder {
+	if ib.listIter == nil {
+		log.Fatal("builder: no iterator")
+	}
+
+	pib := &PersistentIteratorBuilder{
+		PointerIteratorBuilder: ib,
+		persister:              p,
+	}
+	return pib
+}
+
+// BuildWithSeeds will build a persistent iterator with the given persister and seeds.
+func (ib *PersistentIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (*PersistentIterator, error) {
+	if ib.listIter == nil {
+		return nil, fmt.Errorf("builder: %w", ErrNoIterator)
+	}
+
+	switch reflect.TypeOf(seeds).Kind() {
+	case reflect.Slice:
+		per, err := NewPersistentIterator(PersistentIteratorConfig{
+			PointerIter: NewSeedingIterator(SeedingIteratorConfig{
+				PointerIter: ib.listIter,
+				SeedIter:    NewSliceIterator(IterKeySeeds, seeds.([]string), true),
+				PlantEvery:  every,
+			}),
+			Persister: ib.persister,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("builder: %w", err)
+		}
+
+		return per, nil
+	case reflect.String:
+		stream, err := NewStreamIterator(fmt.Sprintf("%s", seeds), true)
+		if err != nil {
+			panic(err)
+		}
+
+		per, err := NewPersistentIterator(PersistentIteratorConfig{
+			PointerIter: NewSeedingIterator(SeedingIteratorConfig{
+				PointerIter: ib.listIter,
+				SeedIter:    stream,
+				PlantEvery:  every,
+			}),
+			Persister: ib.persister,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("builder: %w", err)
+		}
+
+		return per, nil
+	}
+
+	return nil, fmt.Errorf("builder: %w", ErrInvalidSeedType)
+}
+
+// Build will build a persistent iterato with the given persister.
+func (ib *PersistentIteratorBuilder) Build() (*PersistentIterator, error) {
+	if ib.seedIter != nil {
+		ib.seedIter.PointerIterator = ib.listIter
+		per, err := NewPersistentIterator(PersistentIteratorConfig{
+			PointerIter: ib.seedIter,
+			Persister:   ib.persister,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("builder: %w", err)
+		}
+
+		return per, nil
+	}
+
+	per, err := NewPersistentIterator(PersistentIteratorConfig{
+		PointerIter: ib.listIter,
+		Persister:   ib.persister,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("builder: %w", err)
+	}
+
+	return per, nil
 }
 
 // randomString ty copilot.
