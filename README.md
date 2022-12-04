@@ -8,9 +8,11 @@ lizt is a flexible list/file manager. you can create stream iterators or slice i
 #### File Stream Iterator
 ```go
 stream, _ := lizt.NewBuilder().Stream("test/10.txt").Build() // round-robin = false
+
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
 
 stream, _ := lizt.NewBuilder().StreamRR("test/10.txt").Build() // round-robin = true
+
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
 ```
 
