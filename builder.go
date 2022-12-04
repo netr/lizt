@@ -101,6 +101,15 @@ func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (
 	return nil, fmt.Errorf("builder: %w", ErrInvalidSeedType)
 }
 
+// MustBuildWithSeeds will build a pointer iterator with the given iterator and seeds. Panics.
+func (ib *PointerIteratorBuilder) MustBuildWithSeeds(every int, seeds interface{}) *SeedingIterator {
+	iter, err := ib.BuildWithSeeds(every, seeds)
+	if err != nil {
+		panic(err)
+	}
+	return iter
+}
+
 // Build will build a pointer iterator with the given iterators.
 func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 	if ib.seedIter != nil {
@@ -109,6 +118,15 @@ func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 	}
 
 	return ib.listIter, nil
+}
+
+// MustBuild will build a persistent iterator with the given persister. Panics.
+func (ib *PointerIteratorBuilder) MustBuild() PointerIterator {
+	iter, err := ib.Build()
+	if err != nil {
+		panic(err)
+	}
+	return iter
 }
 
 // PersistentIteratorBuilder is a builder for a PersistentIterator.
@@ -175,6 +193,15 @@ func (ib *PersistentIteratorBuilder) BuildWithSeeds(every int, seeds interface{}
 	return nil, fmt.Errorf("builder: %w", ErrInvalidSeedType)
 }
 
+// MustBuildWithSeeds will build a persistent iterator with the given persister and seeds. Panics.
+func (ib *PersistentIteratorBuilder) MustBuildWithSeeds(every int, seeds interface{}) *PersistentIterator {
+	iter, err := ib.BuildWithSeeds(every, seeds)
+	if err != nil {
+		panic(err)
+	}
+	return iter
+}
+
 // Build will build a persistent iterato with the given persister.
 func (ib *PersistentIteratorBuilder) Build() (*PersistentIterator, error) {
 	if ib.seedIter != nil {
@@ -199,6 +226,15 @@ func (ib *PersistentIteratorBuilder) Build() (*PersistentIterator, error) {
 	}
 
 	return per, nil
+}
+
+// MustBuild will build a persistent iterator with the given persister. Panics.
+func (ib *PersistentIteratorBuilder) MustBuild() *PersistentIterator {
+	iter, err := ib.Build()
+	if err != nil {
+		panic(err)
+	}
+	return iter
 }
 
 // randomString ty copilot.

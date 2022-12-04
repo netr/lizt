@@ -13,7 +13,9 @@ The major differences between the two iterators are:
 ## Usage
 
 ### Builder Helper Examples
+You can use the `MustBuild` and `MustBuildWithSeeds` functions to create iterators. These functions will panic if there is an error.
 
+```go
 #### File Stream Iterator
 ```go
 stream, _ := lizt.NewBuilder().Stream("test/50000000.txt").Build() // round-robin = false
@@ -134,22 +136,16 @@ func main() {
 	mem := NewInMemoryPersister()
 
 	// B() => NewBuilder(), StreamRR() => Stream with Round Robin, PersistTo() => Persist to Persister, BuildWithSeeds() => Build the Iterator with Seeding
-	fiftyStream, err := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).BuildWithSeeds(2, []string{"seeder1", "seeder2"}) // round-robin = false
-	if err != nil {
-		panic(err)
-	}
+	fiftyStream := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).MustBuildWithSeeds(2, []string{"seeder1", "seeder2"}) // round-robin = false
 
 	// B() => NewBuilder(), SliceNamedRR() => Named slice with Round Robin, PersistTo() => Persist to Persister, Build() => Build the Iterator
 	numbers := []string{"1", "2", "3", "4", "5"}
-	numbersSlice, err := lizt.B().SliceNamedRR(string(IterKeyNumbers), numbers).PersistTo(mem).Build() // round-robin = false
-	if err != nil {
-		panic(err)
-	}
+	numbersSlice := lizt.B().SliceNamedRR(string(IterKeyNumbers), numbers).PersistTo(mem).MustBuild() // round-robin = false
 
 	// initialize and add iterators to the manager
 	mgr := lizt.NewManager().AddIters(fiftyStream, numbersSlice)
 
-	_, err = mgr.MustGet(string(IterKeyFiftyMillion)).Next(4)
+	_, err := mgr.MustGet(string(IterKeyFiftyMillion)).Next(4)
 	if err != nil {
 		panic(err)
 	}
