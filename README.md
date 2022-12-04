@@ -16,11 +16,11 @@ The major differences between the two iterators are:
 
 #### File Stream Iterator
 ```go
-stream, _ := lizt.NewBuilder().Stream("test/10.txt").Build() // round-robin = false
+stream, _ := lizt.NewBuilder().Stream("test/50000000.txt").Build() // round-robin = false
 
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
 
-stream, _ := lizt.NewBuilder().StreamRR("test/10.txt").Build() // round-robin = true
+stream, _ := lizt.NewBuilder().StreamRR("test/50000000.txt").Build() // round-robin = true
 
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
 ```
@@ -54,11 +54,11 @@ fmt.Println(slice.Next(3)) // "a", "b", "c"
 plantEvery := 2
 
 seedStream, _ = lizt.B().
-            Stream("test/10.txt").
+            Stream("test/10000000.txt").
             BuildWithSeeds(plantEvery, []string{"seed1", "seed2"}) // round-robin = false
 
 seedStream, _ = lizt.B().
-            StreamRR("test/10.txt").
+            StreamRR("test/50000000.txt").
             BuildWithSeeds(plantEvery, []string{"seed1", "seed2"}) // round-robin = true
 
 fmt.Println(slice.Next(4)) // "seed1", "a", "seed2", "b"
@@ -69,11 +69,11 @@ fmt.Println(slice.Next(4)) // "seed1", "a", "seed2", "b"
 plantEvery := 2
 
 seedStream, _ = lizt.B().
-            Stream("test/10.txt").
+            Stream("test/10000000.txt").
             BuildWithSeeds(plantEvery, "data/seeds.txt") // round-robin = false
 
 seedStream, _ = lizt.B().
-            StreamRR("test/10.txt").
+            StreamRR("test/50000000.txt").
             BuildWithSeeds(plantEvery, "data/seeds.txt") // round-robin = true
 
 fmt.Println(slice.Next(4))// "seed1", "a", "seed2", "b"
@@ -84,7 +84,7 @@ fmt.Println(slice.Next(4))// "seed1", "a", "seed2", "b"
 ```go
 mem := NewInMemoryPersister()
 
-stream, _ := lizt.B().StreamRR("test/10.txt").PersistTo(mem).Build() // round-robin = false
+stream, _ := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).Build() // round-robin = false
 
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
 ```
@@ -104,7 +104,7 @@ fmt.Println(stream.Next(3)) // "test", "this", "here"
 mem := NewInMemoryPersister()
 
 stream, _ := lizt.B().
-        StreamRR("test/10.txt").
+        StreamRR("test/50000000.txt").
         PersistTo(mem).
         BuildWithSeeds(2, []string{"seed1", "seed2"}) // round-robin = false
 		
