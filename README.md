@@ -206,3 +206,16 @@ func main() {
 	}
 }
 ```
+
+# Development
+
+### Pre commit hooks
+Install `https://pre-commit.com/#install`
+
+run `pre-commit install`
+
+### Running tests
+`make test`
+
+### Running benchmarks
+`make bench`
