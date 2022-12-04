@@ -21,7 +21,7 @@ fmt.Println(stream.Next(5))
 slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to false for ease of use
 fmt.Println(slice.Next(3))
 
-slice, _ := lizt.B().SliceRR([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to false for ease of use
+slice, _ := lizt.B().SliceRR([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to true for ease of use
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
