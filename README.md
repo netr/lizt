@@ -14,7 +14,7 @@ fmt.Println(stream.Next(5))
 
 #### Slice Iterator
 ```go
-slice, _ := lizt.Builder().Slice([]string{"a", "b", "c", "d", "e"}).Build()
+slice, _ := lizt.Builder().Slice("name", []string{"a", "b", "c", "d", "e"}, roundRobin).Build()
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
@@ -23,8 +23,8 @@ fmt.Println(slice.Next(3))
 ```go
 plantEvery := 2
 seedStream, _ = lizt.Builder().
-Stream("test/10.txt", roundRobin).
-WithSeeds(plantEvery, []string{"seed1", "seed2"})
+            Stream("test/10.txt", roundRobin).
+            WithSeeds(plantEvery, []string{"seed1", "seed2"})
 
 fmt.Println(slice.Next(4))
 // "seed1", "a", "seed2", "b"
