@@ -12,3 +12,11 @@ repos:
     - id: go-critic
     - id: go-unit-tests
     - id: go-mod-tidy
+- repo: local
+  hooks:
+    - id: make-go-tests
+      name: make go tests
+      language: 'script'
+      always_run: true
+      stages: [post-commit]
+      entry: make test
