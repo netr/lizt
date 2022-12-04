@@ -9,7 +9,7 @@ import (
 func Test_NewIteratorBuilder_WithSeeds(t *testing.T) {
 	si, err := lizt.Builder().
 		Stream("test/10.txt", true).
-		WithSeeds(2, []string{"seed1", "seed2", "seed3"})
+		BuildWithSeeds(2, []string{"seed1", "seed2", "seed3"})
 
 	if err != nil {
 		t.Errorf("Builder() error = %v", err)

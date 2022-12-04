@@ -38,7 +38,7 @@ func (ib *PointerIteratorBuilder) Slice(name string, lines []string, roundRobin 
 	return ib
 }
 
-func (ib *PointerIteratorBuilder) WithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
+func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
 	if ib.listIter == nil {
 		panic("no iterator")
 	}

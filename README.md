@@ -24,7 +24,7 @@ fmt.Println(slice.Next(3))
 plantEvery := 2
 seedStream, _ = lizt.Builder().
             Stream("test/10.txt", roundRobin).
-            WithSeeds(plantEvery, []string{"seed1", "seed2"})
+            BuildWithSeeds(plantEvery, []string{"seed1", "seed2"})
 
 fmt.Println(slice.Next(4))
 // "seed1", "a", "seed2", "b"
@@ -35,7 +35,7 @@ fmt.Println(slice.Next(4))
 plantEvery := 2
 seedStream, _ = lizt.Builder().
             Stream("test/10.txt", roundRobin).
-            WithSeeds(plantEvery, "data/seeds.txt")
+            BuildWithSeeds(plantEvery, "data/seeds.txt")
 
 fmt.Println(slice.Next(4))
 // "seed1", "a", "seed2", "b"
