@@ -1,9 +1,18 @@
 # Lizt
 lizt is a flexible list/file manager. you can create stream iterators or slice iterators as the base. there is a persistent storage wrapper and a seeder wrapper.
 
+## Read first
+Based on the benchmarks, it seems that the SliceIterator is faster in every case. Which is pretty much true, once the slice is in memory.
+
+The major differences between the two iterators are:
+- Slice requires holding the entire list in memory and is therefore limited by the amount of memory available. Stream does not have this limitation.
+- Slice is faster when the list is small. Stream is faster when the list is large.
+- Slices will break eventually. For really large lists (10M+), streams are always the better choice.
+- Streams should **not be used at all** if the list is small. The overhead of re-creating a stream, when round-robin is being used, is not worth it. Instead, `lizt.ReadFromFile(path)` into a SliceIterator.
+
 ## Usage
 
-## Builder Helper Examples
+### Builder Helper Examples
 
 #### File Stream Iterator
 ```go
@@ -103,7 +112,7 @@ fmt.Println(stream.Next(5)) // "seed1", "a", "seed2", "b", "seed1"
 // Persister Value => mem["10"] = 2
 ```
 
-## Slice Iterator With SeedingIterator Wrapper
+### Slice Iterator With SeedingIterator Wrapper
 ```go
 package main
 import "git.faze.center/netr/lizt"
@@ -142,7 +151,7 @@ func main() {
 }
 ```
 
-## File Stream Iterator With SeedingIterator Wrapper
+### File Stream Iterator With SeedingIterator Wrapper
 ```go
 package main
 import "git.faze.center/netr/lizt"
