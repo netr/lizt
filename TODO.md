@@ -7,7 +7,7 @@
 ### Persisters
 - Write IniPersister
 
-#### Maybe
-- Write YamlPersister
-- Write JSONPersister
-- Write RedisPersister
+#### ?? Persisters
+- Write YamlPersister (maybe)
+- Write JSONPersister (probably slow)
+- Write RedisPersister (kind of pointless from a sync perspective. could work for global store?)
