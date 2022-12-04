@@ -9,6 +9,7 @@ import (
 	"sync"
 )
 
+// IniPersister is a persister that uses an ini file
 type IniPersister struct {
 	lizt.PersistentIterator
 	iniPath string
@@ -16,14 +17,7 @@ type IniPersister struct {
 	iniFile *ini.File
 }
 
-func getCurrentDir() (string, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return "", errors.New("failed to get current directory")
-	}
-	return dir, nil
-}
-
+// NewIniPersister creates a new thread-safe IniPersister instance using the given path
 func NewIniPersister(iniPath string) (*IniPersister, error) {
 	if lizt.DoesFileExist(iniPath) == false {
 		_, err := os.Create(iniPath)
@@ -42,6 +36,7 @@ func NewIniPersister(iniPath string) (*IniPersister, error) {
 	}, nil
 }
 
+// Set sets the value of a key
 func (i *IniPersister) Set(key string, value uint64) error {
 	i.mu.Lock()
 	defer i.mu.Unlock()
@@ -56,6 +51,7 @@ func (i *IniPersister) Set(key string, value uint64) error {
 
 var ErrNotFound = errors.New("not found")
 
+// Get gets the value of a key
 func (i *IniPersister) Get(key string) (uint64, error) {
 	i.mu.RLock()
 	defer i.mu.RUnlock()

@@ -2,11 +2,13 @@ package lizt
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
 )
 
+// OpenFile opens a file
 func OpenFile(filename string) (*os.File, error) {
 	f, err := os.Open(filename)
 	if err != nil {
@@ -15,6 +17,7 @@ func OpenFile(filename string) (*os.File, error) {
 	return f, nil
 }
 
+// ReadFromFile reads a file into a slice of strings
 func ReadFromFile(filename string) ([]string, error) {
 	lc, _ := FileLineCount(filename)
 	idx := 0
@@ -37,6 +40,7 @@ func ReadFromFile(filename string) ([]string, error) {
 	return lines, nil
 }
 
+// FileLineCount returns the number of lines in a file
 func FileLineCount(filename string) (int, error) {
 	file, err := OpenFile(filename)
 	if err != nil {
@@ -56,6 +60,7 @@ func FileLineCount(filename string) (int, error) {
 	return count, nil
 }
 
+// RepeatLines repeats lines in a file
 func RepeatLines(lines []string, times int) []string {
 	res := make([]string, len(lines)*times)
 	idx := 0
@@ -68,6 +73,7 @@ func RepeatLines(lines []string, times int) []string {
 	return res
 }
 
+// GetDuplicateLines returns duplicate lines in a file
 func GetDuplicateLines(lines []string) []string {
 	var duplicates []string
 	for i := 0; i < len(lines); i++ {
@@ -80,6 +86,7 @@ func GetDuplicateLines(lines []string) []string {
 	return duplicates
 }
 
+// WriteToFile writes a string to a file
 func WriteToFile(lines []string, filename string) error {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -97,6 +104,7 @@ func WriteToFile(lines []string, filename string) error {
 	return nil
 }
 
+// Shuffle shuffles a slice of strings
 func Shuffle(lines []string) []string {
 	res := make([]string, len(lines))
 	perm := rand.Perm(len(lines))
@@ -106,6 +114,7 @@ func Shuffle(lines []string) []string {
 	return res
 }
 
+// ReadFileToString reads a file into a string
 func ReadFileToString(filename string) (string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -126,10 +135,21 @@ func ReadFileToString(filename string) (string, error) {
 
 	return string(bs), nil
 }
+
+// DoesFileExist checks if a file exists
 func DoesFileExist(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false
 	}
 	return !info.IsDir()
+}
+
+// GetCurrentDir returns the current directory
+func GetCurrentDir() (string, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return "", errors.New("failed to get current directory")
+	}
+	return dir, nil
 }
