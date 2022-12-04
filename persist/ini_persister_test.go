@@ -21,7 +21,7 @@ func TestNewIniPersister(t *testing.T) {
 		t.Errorf("Set() error = %v", err)
 	}
 
-	if doesFileExist(path) == false {
+	if lizt.DoesFileExist(path) == false {
 		t.Errorf("Expected file to exist")
 	}
 
@@ -35,12 +35,4 @@ func TestNewIniPersister(t *testing.T) {
 	}
 
 	_ = os.Remove(path)
-}
-
-func doesFileExist(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
 }
