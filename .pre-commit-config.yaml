@@ -16,7 +16,6 @@ repos:
   hooks:
     - id: make-go-tests
       name: make go tests
-      language: 'script'
+      language: 'system'
       always_run: true
-      stages: [post-commit]
       entry: make test
