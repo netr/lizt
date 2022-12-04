@@ -1,8 +1,8 @@
 # TODO
 
 ### Functionality
-- Write `t.Parallel()` tests for all the Next Iterators to ensure they are thread safe
-- Create `PersistTo` functionality for the Builder
+- <s>Write `t.Parallel()` tests for all the Next Iterators to ensure they are thread safe</s>
+- <s>Create `PersistTo` functionality for the Builder</s>
  
 ### Persisters
 - Write IniPersister

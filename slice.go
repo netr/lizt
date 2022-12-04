@@ -2,6 +2,7 @@ package lizt
 
 import (
 	"fmt"
+	"sync"
 	"sync/atomic"
 )
 
@@ -11,6 +12,7 @@ type SliceIterator struct {
 	name       string
 	lines      []string
 	roundRobin bool
+	mu         sync.RWMutex
 }
 
 // NewSliceIterator returns a new slice iterator.
@@ -25,6 +27,9 @@ func NewSliceIterator(name string, lines []string, roundRobin bool) *SliceIterat
 
 // Next returns the next line from the iterator.
 func (si *SliceIterator) Next(count int) ([]string, error) {
+	si.mu.Lock()
+	defer si.mu.Unlock()
+
 	var lines []string
 	for i := 0; i < count; i++ {
 		ptr := si.pointer.Load()

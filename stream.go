@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"strings"
+	"sync"
 	"sync/atomic"
 )
 
@@ -15,6 +16,7 @@ type StreamIterator struct {
 	name       string
 	fileLines  int
 	roundRobin bool
+	mu         sync.RWMutex
 }
 
 // NewStreamIterator returns a new stream iterator.
@@ -43,6 +45,9 @@ func NewStreamIterator(filename string, roundRobin bool) (*StreamIterator, error
 
 // Next returns the next line from the iterator.
 func (si *StreamIterator) Next(count int) ([]string, error) {
+	si.mu.Lock()
+	defer si.mu.Unlock()
+
 	var lines []string
 	for i := 1; i <= count; i++ {
 		txt, err := si.reader.ReadString('\n')
