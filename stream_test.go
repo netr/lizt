@@ -51,20 +51,14 @@ func TestNewStreamIterator_ShouldAddBothIteratorsCorrectly(t *testing.T) {
 		t.Errorf("ReadFromFile() error = %v", err)
 	}
 
-	err = m.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
-	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
-	}
+	m.AddIter(lizt.NewSliceIterator(nameNumbers, f, false))
 
 	fs, err := lizt.NewStreamIterator(filenameOneMillion, false)
 	if err != nil {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 
-	err = m.AddIter(fs)
-	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
-	}
+	m.AddIter(fs)
 
 	if m.Len() != 2 {
 		t.Errorf("wanted %d files, got: %d", 2, m.Len())
@@ -78,10 +72,7 @@ func TestStreamIterator_Next(t *testing.T) {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 
-	err = mgr.AddIter(fs)
-	if err != nil {
-		t.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	first, err := mgr.MustGet("1000000").Next(10)
 	if err != nil {
@@ -109,10 +100,7 @@ func TestStreamIterator_Next_RoundRobin(t *testing.T) {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 
-	err = m.AddIter(fs)
-	if err != nil {
-		t.Errorf("AddIter() error = %v", err)
-	}
+	m.AddIter(fs)
 
 	first, err := m.MustGet("10").Next(10)
 	if err != nil {
@@ -140,10 +128,7 @@ func TestStreamIterator_Next_RoundRobin_NoMoreLines(t *testing.T) {
 		t.Errorf("NewStreamIterator() error = %v", err)
 	}
 
-	err = mgr.AddIter(fs)
-	if err != nil {
-		t.Errorf("AddPointerIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	_, err = mgr.MustGet("10").Next(10)
 	if err != nil {

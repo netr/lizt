@@ -83,7 +83,6 @@ fmt.Println(slice.Next(4))// "seed1", "a", "seed2", "b"
 #### File Stream Iterator with Persistence ( See `persist_test.go` for more examples )
 ```go
 mem := NewInMemoryPersister()
-
 stream, _ := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).Build() // round-robin = false
 
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
@@ -112,87 +111,49 @@ fmt.Println(stream.Next(5)) // "seed1", "a", "seed2", "b", "seed1"
 // Persister Value => mem["10"] = 2
 ```
 
-### Slice Iterator With SeedingIterator Wrapper
+## Using the Manager
+
 ```go
 package main
+
 import "git.faze.center/netr/lizt"
 
 type IterKey string
+
 const (
-	IterKeyNumbers IterKey = "numbers"   
-	IterKeySeeds IterKey = "seeds"
+	IterKeyFiftyMillion IterKey = "50000000"
+	IterKeyNumbers      IterKey = "numbers"
 )
 
 func main() {
-    numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
-    numbersIter := lizt.NewSliceIterator(IterKeyNumbers, numbers, false)
-    seedIter := lizt.NewSliceIterator(IterKeySeeds, []string{"seeder1", "seeder2"}, true)
+	mem := NewInMemoryPersister()
 
-    seed := lizt.NewSeedingIterator(
-        lizt.SeedingIteratorConfig{
-            PointerIter:   numbersIter,
-            SeedIter:      seedIter,
-            PlantEvery:    2,
-        },
-    )
-    
-    // initialize and add seeder to manager
-    mgr := lizt.NewManager()
-    err = mgr.AddIter(seed)
-    if err != nil {
-        panic(err)
-    }
-    
-    _, err = mgr.MustGet(IterKeyNumbers).Next(4)
-    if err != nil {
-        panic(err)
-    }
-    // results in ["seeder1", "1", "seeder2", "2"]
+	// B() => NewBuilder(), StreamRR() => Stream with Round Robin, PersistTo() => Persist to Persister, BuildWithSeeds() => Build the Iterator with Seeding
+	fiftyStream, err := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).BuildWithSeeds(2, []string{"seeder1", "seeder2"}) // round-robin = false
+	if err != nil {
+		panic(err)
+	}
+
+	// B() => NewBuilder(), StreamRR() => Stream with Round Robin, PersistTo() => Persist to Persister, Build() => Build the Iterator
+	numbers := []string{"1", "2", "3", "4", "5"}
+	numbersSlice, err := lizt.B().SliceNamedRR(string(IterKeyNumbers), numbers).PersistTo(mem).Build() // round-robin = false
+	if err != nil {
+		panic(err)
+	}
+
+	// initialize and add seeder to manager
+	mgr := lizt.NewManager().AddIters(fiftyStream, numbersSlice)
+
+	_, err = mgr.MustGet(string(IterKeyFiftyMillion)).Next(4)
+	if err != nil {
+		panic(err)
+	}
+	// results in ["seeder1", "1", "seeder2", "2"]
+
+	_, err = mgr.MustGet(string(IterKeyNumbers)).Next(4)
+	if err != nil {
+		panic(err)
+	}
+	// results in ["1", "2", "3", "4"]
 }
 ```
-
-### File Stream Iterator With SeedingIterator Wrapper
-```go
-package main
-import "git.faze.center/netr/lizt"
-
-type IterKey string
-const (
-    IterKeyExample IterKey = "example"
-    IterKeySeeds IterKey = "seeds"
-)
-
-func main() {
-    roundRobin := true
-    seedIter := lizt.NewSliceIterator(IterKeySeeds, []string{"seeder1", "seeder2"}, roundRobin)
-    streamIter, err := lizt.NewStreamIterator("example.txt", roundRobin)
-	
-    if err != nil {
-        panic(err)
-    }
-    
-    seed := lizt.NewSeedingIterator(
-        lizt.SeedingIteratorConfig{
-	        PointerIter:   streamIter,
-	        SeedIter:      seedIter,
-	        PlantEvery:    2,
-        },
-    )
-    
-    // initialize and add seeder to manager
-    mgr := lizt.NewManager()
-    err = mgr.AddIter(seed)
-    if err != nil {
-        panic(err)
-    }
-    
-    _, err = mgr.MustGet(IterKeyExample).Next(4)
-    if err != nil {
-        panic(err)
-    }
-    // results in ["seeder1", "{line_1}", "seeder2", "{line_2}"]
-}
-```
-
-## Persistent Wrapper
-See `TestPersistentIterator_Next` and `TestNewPersistentIterator_UsingSeedingIterator_Next` in `persist_test.go` for examples.

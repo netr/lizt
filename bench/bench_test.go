@@ -15,30 +15,28 @@ var (
 )
 
 func Test_CreateLargeSeedData(t *testing.T) {
-	disabled := true
-	if !disabled {
-		lines, err := lizt.ReadFromFile(filenameOneMillion)
-		if err != nil {
-			t.Errorf("ReadFromFile() error = %v", err)
-		}
-		err = lizt.WriteToFile(lizt.RepeatLines(lines, 10), filenameTenMillion)
-		if err != nil {
-			t.Errorf("WriteToFile() error = %v", err)
-		}
+	t.SkipNow()
+
+	lines, err := lizt.ReadFromFile(filenameOneMillion)
+	if err != nil {
+		t.Errorf("ReadFromFile() error = %v", err)
+	}
+	err = lizt.WriteToFile(lizt.RepeatLines(lines, 10), filenameTenMillion)
+	if err != nil {
+		t.Errorf("WriteToFile() error = %v", err)
 	}
 }
 
 func Test_CreateLargestSeedData(t *testing.T) {
-	disabled := true
-	if !disabled {
-		lines, err := lizt.ReadFromFile(filenameOneMillion)
-		if err != nil {
-			t.Errorf("ReadFromFile() error = %v", err)
-		}
-		err = lizt.WriteToFile(lizt.RepeatLines(lines, 50), filenameFiftyMillion)
-		if err != nil {
-			t.Errorf("WriteToFile() error = %v", err)
-		}
+	t.SkipNow()
+
+	lines, err := lizt.ReadFromFile(filenameOneMillion)
+	if err != nil {
+		t.Errorf("ReadFromFile() error = %v", err)
+	}
+	err = lizt.WriteToFile(lizt.RepeatLines(lines, 50), filenameFiftyMillion)
+	if err != nil {
+		t.Errorf("WriteToFile() error = %v", err)
 	}
 }
 
@@ -50,10 +48,7 @@ func BenchmarkStreamIterator_Next_10(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkStreamIterator_Next_10: Setup took: %v", since)
@@ -78,10 +73,7 @@ func BenchmarkSliceIterator_Next_10(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkSliceIterator_Next_10: Setup took: %v", since)
@@ -102,10 +94,7 @@ func BenchmarkStreamIterator_Next_1000000(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkStreamIterator_Next_1000000: Setup took: %v", since)
@@ -130,10 +119,7 @@ func BenchmarkSliceIterator_Next_1000000(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkSliceIterator_Next_1000000: Setup took: %v", since)
@@ -154,10 +140,7 @@ func BenchmarkStreamIterator_Next_10000000(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkStreamIterator_Next_10000000: Setup took %v", since)
@@ -182,10 +165,7 @@ func BenchmarkSliceIterator_Next_10000000(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkSliceIterator_Next_10000000: Setup took: %v", since)
@@ -206,10 +186,7 @@ func BenchmarkStreamIterator_Next_50000000(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkStreamIterator_Next_50000000: Setup took: %v", since)
@@ -234,10 +211,7 @@ func BenchmarkSliceIterator_Next_50000000(b *testing.B) {
 	if err != nil {
 		b.Errorf("NewStreamIterator() error = %v", err)
 	}
-	err = mgr.AddIter(fs)
-	if err != nil {
-		b.Errorf("AddIter() error = %v", err)
-	}
+	mgr.AddIter(fs)
 
 	since := time.Since(start)
 	b.Logf("BenchmarkSliceIterator_Next_50000000: Setup took: %v", since)

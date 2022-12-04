@@ -28,9 +28,17 @@ func NewManager() *Manager {
 }
 
 // AddIter adds an iterator to the manager.
-func (m *Manager) AddIter(i Iterator) error {
+func (m *Manager) AddIter(i Iterator) *Manager {
 	m.files[i.Name()] = i
-	return nil
+	return m
+}
+
+// AddIters adds a slice of iterators to the manager.
+func (m *Manager) AddIters(iters ...Iterator) *Manager {
+	for _, iter := range iters {
+		m.files[iter.Name()] = iter
+	}
+	return m
 }
 
 // Len returns the length of the iterator.
@@ -53,10 +61,8 @@ func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
 		if err != nil {
 			return err
 		}
-		err = m.AddIter(si)
-		if err != nil {
-			return err
-		}
+
+		m.AddIter(si)
 	}
 
 	return nil

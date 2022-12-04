@@ -77,9 +77,7 @@ func TestManager_AddIter(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := lizt.NewManager()
-			if err := m.AddIter(tt.args.file); (err != nil) != tt.wantErr {
-				t.Errorf("AddSliceIter() error = %v, wantErr %v", err, tt.wantErr)
-			}
+			m.AddIter(tt.args.file)
 			if m.MustGet(tt.fields.name) != tt.args.file {
 				t.Errorf("AddSliceIter() error = %v, wantErr %v", nameNumbers, tt.args.file)
 			}
@@ -102,11 +100,7 @@ func TestManager_AddSeeder(t *testing.T) {
 		},
 	)
 
-	mgr := lizt.NewManager()
-	err := mgr.AddIter(seed)
-	if err != nil {
-		t.Errorf("AddIter() error = %v", err)
-	}
+	mgr := lizt.NewManager().AddIter(seed)
 	if mgr.MustGet(nameNumbers).Len() != len(numbers) {
 		t.Errorf("expected %d, got %d", len(numbers), mgr.MustGet(nameNumbers).Len())
 	}

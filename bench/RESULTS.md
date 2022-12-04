@@ -33,7 +33,7 @@ PASS
 ```
 ----
 
-*Note:* To generate seed data for tests set `disabled := false` in the two `Test_CreateLargeSeedData`  and `Test_CreateLargestSeedData` functions
+*Note:* To generate seed data for tests uncomment `t.SkipNow()` in the two `Test_CreateLargeSeedData`  and `Test_CreateLargestSeedData` functions
 
 ----
 
