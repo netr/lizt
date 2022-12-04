@@ -134,7 +134,7 @@ func main() {
 		panic(err)
 	}
 
-	// B() => NewBuilder(), StreamRR() => Stream with Round Robin, PersistTo() => Persist to Persister, Build() => Build the Iterator
+	// B() => NewBuilder(), SliceNamedRR() => Named slice with Round Robin, PersistTo() => Persist to Persister, Build() => Build the Iterator
 	numbers := []string{"1", "2", "3", "4", "5"}
 	numbersSlice, err := lizt.B().SliceNamedRR(string(IterKeyNumbers), numbers).PersistTo(mem).Build() // round-robin = false
 	if err != nil {
