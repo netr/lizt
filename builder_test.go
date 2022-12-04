@@ -1,16 +1,16 @@
 package lizt_test
 
 import (
-	"git.faze.center/netr/lizt"
 	"reflect"
 	"testing"
+
+	"git.faze.center/netr/lizt"
 )
 
 func Test_NewIteratorBuilder_Slice_WithSeeds(t *testing.T) {
 	si, err := lizt.B().
 		Slice([]string{"a", "b", "c", "d", "e"}, true).
 		BuildWithSeeds(2, []string{"seed1", "seed2", "seed3"})
-
 	if err != nil {
 		t.Errorf("Builder() error = %v", err)
 	}
@@ -34,7 +34,6 @@ func Test_NewIteratorBuilder_Slice_Build(t *testing.T) {
 	si, err := lizt.B().
 		Slice([]string{"a", "b", "c", "d", "e"}, true).
 		Build()
-
 	if err != nil {
 		t.Errorf("Builder() error = %v", err)
 	}
@@ -58,7 +57,6 @@ func Test_NewIteratorBuilder_Stream_WithSeeds(t *testing.T) {
 	si, err := lizt.B().
 		Stream("test/10.txt", true).
 		BuildWithSeeds(2, []string{"seed1", "seed2", "seed3"})
-
 	if err != nil {
 		t.Errorf("Builder() error = %v", err)
 	}
@@ -82,7 +80,6 @@ func Test_NewIteratorBuilder_Stream_Build(t *testing.T) {
 	si, err := lizt.B().
 		Stream("test/10.txt", true).
 		Build()
-
 	if err != nil {
 		t.Errorf("Builder() error = %v", err)
 	}

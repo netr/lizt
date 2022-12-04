@@ -7,14 +7,13 @@ import (
 	"reflect"
 )
 
-var (
-	IterKeySeeds = "seeds"
-)
+var IterKeySeeds = "seeds"
 
 type PointerIteratorBuilder struct {
-	path     string
-	seedIter *SeedingIterator
-	listIter PointerIterator
+	path      string
+	seedIter  *SeedingIterator
+	listIter  PointerIterator
+	persister Persister
 }
 
 func NewBuilder() *PointerIteratorBuilder {
@@ -46,9 +45,14 @@ func (ib *PointerIteratorBuilder) SliceWithName(name string, lines []string, rou
 	return ib
 }
 
+var (
+	ErrNoIterator      = errors.New("no iterator")
+	ErrInvalidSeedType = errors.New("invalid seed type")
+)
+
 func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
 	if ib.listIter == nil {
-		panic("no iterator")
+		return nil, fmt.Errorf("builder: %w", ErrNoIterator)
 	}
 
 	switch reflect.TypeOf(seeds).Kind() {
@@ -69,7 +73,8 @@ func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (
 			PlantEvery:  every,
 		}), nil
 	}
-	return nil, errors.New("invalid seeds type")
+
+	return nil, fmt.Errorf("builder: %w", ErrInvalidSeedType)
 }
 
 func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
@@ -81,9 +86,9 @@ func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 	return ib.listIter, nil
 }
 
-// randomString ty copilot
+// randomString ty copilot.
 func randomString(count int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, count)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]

@@ -37,7 +37,7 @@ func TestRepeatLines(t *testing.T) {
 // BenchmarkReadFromFilePreAlloc-8   	      24	  49227811 ns/op
 // I removed the non-pre-allocated version because it was slower
 // Even though the pre-allocated version required opening the file *twice*,
-// It's still faster than the non-pre-allocated version
+// It's still faster than the non-pre-allocated version.
 func BenchmarkReadFromFile(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_, err := lizt.ReadFromFile("test/1000000.txt")

@@ -2,9 +2,10 @@ package lizt_test
 
 import (
 	"errors"
-	"git.faze.center/netr/lizt"
 	"reflect"
 	"testing"
+
+	"git.faze.center/netr/lizt"
 )
 
 func TestPersistentIterator_Next(t *testing.T) {
@@ -142,7 +143,7 @@ func TestNewPersistentIterator_UsingSeedingIterator_Next(t *testing.T) {
 	}
 }
 
-// USED AS "MOCK" FOR TESTING
+// USED AS "MOCK" FOR TESTING.
 type InMemoryPersister struct {
 	lizt.PersistentIterator
 	pointers map[string]uint64
@@ -159,10 +160,12 @@ func (i *InMemoryPersister) Set(key string, value uint64) error {
 	return nil
 }
 
+var ErrNotFound = errors.New("not found")
+
 func (i *InMemoryPersister) Get(key string) (uint64, error) {
 	if val, ok := i.pointers[key]; ok {
 		return val, nil
 	}
 
-	return 0, errors.New("none")
+	return 0, ErrNotFound
 }

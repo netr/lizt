@@ -33,7 +33,7 @@ func NewPersistentIterator(cfg PersistentIteratorConfig) (*PersistentIterator, e
 func (pi *PersistentIterator) Next(count int) ([]string, error) {
 	next, err := pi.PointerIterator.Next(count)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("next: name: %s -> %w", pi.Name(), err)
 	}
 
 	err = pi.Set(pi.Name(), pi.Pointer())
