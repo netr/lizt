@@ -86,6 +86,7 @@ mem := NewInMemoryPersister()
 stream, _ := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).Build() // round-robin = false
 
 fmt.Println(stream.Next(5)) // "a", "b", "c", "e", "f"
+// Persister Value => mem["50000000"] = 5
 ```
 
 #### Slice Iterator with Persistence
@@ -95,7 +96,7 @@ mem := NewInMemoryPersister()
 stream, _ := lizt.B().Slice([]{"test","this","here"}).PersistTo(mem).Build() // round-robin = false
 
 fmt.Println(stream.Next(3)) // "test", "this", "here"
-// mem["10"] = 3
+// Persister Value => mem["10"] = 3
 ```
 
 #### Seeding File Stream Iterator with Persistence
@@ -112,6 +113,10 @@ fmt.Println(stream.Next(5)) // "seed1", "a", "seed2", "b", "seed1"
 ```
 
 ## Using the Manager
+
+When using the manager, you must use `SliceNamed` and `SliceNamedRR`. The manager requires a name to properly use it's `Get` function. 
+
+When you're using streams, the `Get` look up key will always be the filename of the path. I.e. `test/50000000.txt` will be found at `mgr.Get("50000000")`
 
 ```go
 package main
