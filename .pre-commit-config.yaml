@@ -14,8 +14,8 @@ repos:
     - id: go-mod-tidy
 - repo: local
   hooks:
-    - id: make-go-tests
-      name: make go tests
+    - id: run-go-tests
+      name: run go tests
       language: 'system'
       always_run: true
       entry: make test
