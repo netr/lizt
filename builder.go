@@ -3,6 +3,7 @@ package lizt
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"reflect"
 )
 
@@ -33,7 +34,14 @@ func (ib *PointerIteratorBuilder) Stream(path string, roundRobin bool) *PointerI
 	return ib
 }
 
-func (ib *PointerIteratorBuilder) Slice(name string, lines []string, roundRobin bool) *PointerIteratorBuilder {
+// Slice creates a new SliceIterator. Note that this randomizes the name and won't work while using a Manager. Use SliceWithName instead.
+func (ib *PointerIteratorBuilder) Slice(lines []string, roundRobin bool) *PointerIteratorBuilder {
+	ib.listIter = NewSliceIterator(randomString(8), lines, roundRobin)
+	return ib
+}
+
+// SliceWithName creates a new SliceIterator with a name.
+func (ib *PointerIteratorBuilder) SliceWithName(name string, lines []string, roundRobin bool) *PointerIteratorBuilder {
 	ib.listIter = NewSliceIterator(name, lines, roundRobin)
 	return ib
 }
@@ -71,4 +79,14 @@ func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 	}
 
 	return ib.listIter, nil
+}
+
+// randomString ty copilot
+func randomString(count int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, count)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

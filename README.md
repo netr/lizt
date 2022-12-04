@@ -14,7 +14,14 @@ fmt.Println(stream.Next(5))
 
 #### Slice Iterator
 ```go
-slice, _ := lizt.B().Slice("name", []string{"a", "b", "c", "d", "e"}, roundRobin).Build()
+slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}, roundRobin).Build() // creates a random string name for ease of use
+fmt.Println(slice.Next(3))
+// "a", "b", "c"
+```
+
+#### Slice Iterator With Name (Required if you're using a Manager)
+```go
+slice, _ := lizt.B().SliceWithName("name", []string{"a", "b", "c", "d", "e"}, roundRobin).Build()
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
