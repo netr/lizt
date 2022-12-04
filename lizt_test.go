@@ -141,7 +141,7 @@ func TestManager_SmartAddDirIter(t *testing.T) {
 	}
 
 	if reflect.TypeOf(millionIter).Elem().Name() != "StreamIterator" {
-		t.Errorf("expected StreamIterator, got %s", reflect.TypeOf(millionIter).Name())
+		t.Errorf("expected StreamIterator, got %s", reflect.TypeOf(millionIter).Elem().Name())
 	}
 
 	tenIter, err := mgr.Get("10")
@@ -149,6 +149,6 @@ func TestManager_SmartAddDirIter(t *testing.T) {
 		t.Errorf("Get() error = %v", err)
 	}
 	if reflect.TypeOf(tenIter).Elem().Name() != "SliceIterator" {
-		t.Errorf("expected SliceIterator, got %s", reflect.TypeOf(tenIter).Name())
+		t.Errorf("%s: expected SliceIterator, got %s", "10", reflect.TypeOf(tenIter).Elem().Name())
 	}
 }

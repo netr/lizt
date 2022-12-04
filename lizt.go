@@ -15,6 +15,10 @@ var (
 	ErrPointerOutOfRange = errors.New("pointer out of range")
 )
 
+var (
+	MaxLinesForSliceIter = 250_000
+)
+
 // Manager manages iterators.
 type Manager struct {
 	files map[string]Iterator
@@ -71,7 +75,7 @@ func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
 }
 
 // SmartAddDirIter walks a directory of files, converts the files into Iterators (while taking line count into account), and adds them to the manager.
-// Files with less than 1000 lines will be SliceIterators, the rest will be StreamIterators.
+// Files with less than MaxLinesForSliceIter lines will be SliceIterators, the rest will be StreamIterators.
 // This will always be slower than just running AddDirIter(), because we have to count the lines in each file.
 func (m *Manager) SmartAddDirIter(dir string, roundRobin bool) error {
 	if !strings.HasSuffix(dir, "/") {
@@ -88,7 +92,7 @@ func (m *Manager) SmartAddDirIter(dir string, roundRobin bool) error {
 			return fmt.Errorf("count lines from file: %s -> %w", f, err)
 		}
 
-		if lines > 1000 {
+		if lines > MaxLinesForSliceIter {
 			si, err := NewStreamIterator(f, roundRobin)
 			if err != nil {
 				return err

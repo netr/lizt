@@ -185,7 +185,10 @@ func main() {
 
 ### Adding an entire directory using SmartAddDirIter
 All files in the directory will be added to the manager. 
-These will be `SliceIterators` if the file is less than 1000 lines. Otherwise, they will be `StreamIterators.`This decision is based around the benchmarks. There's a considerable difference in speed when it comes to smaller lists. The streams perform consistently, regardless of the volume of items they have, after a certain amount of lines.
+These will be `SliceIterators` if the file is less than 250,000 lines.
+Otherwise, they will be `StreamIterators.`This decision is based around the benchmarks. There's a considerable difference in speed when it comes to smaller lists. The streams perform consistently, regardless of the volume of items they have, after a certain amount of lines.
+
+TODO: Make `MaxLinesForSliceIter` configurable.
 ```go
 package main
 import "git.faze.center/netr/lizt"
