@@ -105,3 +105,31 @@ func Shuffle(lines []string) []string {
 	}
 	return res
 }
+
+func ReadFileToString(filename string) (string, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return "", fmt.Errorf("os.Open(): %s -> %w", filename, err)
+	}
+	defer file.Close()
+
+	stat, err := file.Stat()
+	if err != nil {
+		return "", fmt.Errorf("file.Stat(): %s -> %w", filename, err)
+	}
+
+	bs := make([]byte, stat.Size())
+	_, err = file.Read(bs)
+	if err != nil {
+		return "", fmt.Errorf("file.Read(): %s -> %w", filename, err)
+	}
+
+	return string(bs), nil
+}
+func DoesFileExist(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
+}

@@ -123,6 +123,7 @@ When you're using streams, the `Get` look up key will always be the filename of 
 package main
 
 import "git.faze.center/netr/lizt"
+import "git.faze.center/netr/lizt/persist"
 
 type IterKey string
 
@@ -132,28 +133,31 @@ const (
 )
 
 func main() {
-	mem := NewInMemoryPersister()
-
-	// B() => NewBuilder(), StreamRR() => Stream with Round Robin, PersistTo() => Persist to Persister, BuildWithSeeds() => Build the Iterator with Seeding
-	fiftyStream := lizt.B().StreamRR("test/50000000.txt").PersistTo(mem).MustBuildWithSeeds(2, []string{"seeder1", "seeder2"}) // round-robin = false
-
-	// B() => NewBuilder(), SliceNamedRR() => Named slice with Round Robin, PersistTo() => Persist to Persister, Build() => Build the Iterator
-	numbers := []string{"1", "2", "3", "4", "5"}
-	numbersSlice := lizt.B().SliceNamedRR(string(IterKeyNumbers), numbers).PersistTo(mem).MustBuild() // round-robin = false
-
-	// initialize and add iterators to the manager
-	mgr := lizt.NewManager().AddIters(fiftyStream, numbersSlice)
-
-	_, err := mgr.MustGet(string(IterKeyFiftyMillion)).Next(4)
-	if err != nil {
-		panic(err)
-	}
-	// results in ["seeder1", "1", "seeder2", "2"]
-
-	_, err = mgr.MustGet(string(IterKeyNumbers)).Next(4)
-	if err != nil {
-		panic(err)
-	}
-	// results in ["1", "2", "3", "4"]
+    ip, err := persist.NewIniPersister("data/persist.ini")
+    if err != nil {
+        panic(err)
+    }
+    
+    // B() => NewBuilder(), StreamRR() => Stream with Round Robin, PersistTo() => Persist to Persister, BuildWithSeeds() => Build the Iterator with Seeding
+    fiftyStream := lizt.B().StreamRR("test/50000000.txt").PersistTo(ip).MustBuildWithSeeds(2, []string{"seeder1", "seeder2"}) // round-robin = false
+    
+    // B() => NewBuilder(), SliceNamedRR() => Named slice with Round Robin, PersistTo() => Persist to Persister, Build() => Build the Iterator
+    numbers := []string{"1", "2", "3", "4", "5"}
+    numbersSlice := lizt.B().SliceNamedRR(string(IterKeyNumbers), numbers).PersistTo(ip).MustBuild() // round-robin = false
+    
+    // initialize and add iterators to the manager
+    mgr := lizt.NewManager().AddIters(fiftyStream, numbersSlice)
+    
+    _, err = mgr.MustGet(string(IterKeyFiftyMillion)).Next(4)
+    if err != nil {
+        panic(err)
+    }
+    // results in ["seeder1", "1", "seeder2", "2"]
+    
+    _, err = mgr.MustGet(string(IterKeyNumbers)).Next(4)
+    if err != nil {
+        panic(err)
+    }
+    // results in ["1", "2", "3", "4"]
 }
 ```
