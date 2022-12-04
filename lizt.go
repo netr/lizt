@@ -46,7 +46,8 @@ func (m *Manager) Len() int {
 	return len(m.files)
 }
 
-// AddDirIter adds a directory of files to the manager.
+// AddDirIter walks a directory of files, converts the files into SliceIterators, and adds them to the manager.
+// This will always be faster than SmarterAddDirIter(). However, it will not take size into account.
 func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
 	if !strings.HasSuffix(dir, "/") {
 		dir += "/"
@@ -57,12 +58,52 @@ func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
 		return err
 	}
 	for _, f := range files {
-		si, err := NewStreamIterator(f, roundRobin)
+		name := makeNameFromFilename(f)
+		lines, err := ReadFromFile(f)
 		if err != nil {
-			return err
+			return fmt.Errorf("read from file: %s -> %w", f, err)
+		}
+		si := NewSliceIterator(name, lines, roundRobin)
+		m.AddIter(si)
+	}
+
+	return nil
+}
+
+// SmarterAddDirIter walks a directory of files, converts the files into Iterators (while taking line count into account), and adds them to the manager.
+// Files with less than 1000 lines will be SliceIterators, the rest will be StreamIterators.
+// This will always be slower than just running AddDirIter(), because we have to count the lines in each file.
+func (m *Manager) SmarterAddDirIter(dir string, roundRobin bool) error {
+	if !strings.HasSuffix(dir, "/") {
+		dir += "/"
+	}
+
+	files, err := ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		lines, err := FileLineCount(f)
+		if err != nil {
+			return fmt.Errorf("count lines from file: %s -> %w", f, err)
 		}
 
-		m.AddIter(si)
+		if lines > 1000 {
+			si, err := NewStreamIterator(f, roundRobin)
+			if err != nil {
+				return err
+			}
+			m.AddIter(si)
+		} else {
+			name := makeNameFromFilename(f)
+			lines, err := ReadFromFile(f)
+			if err != nil {
+				return fmt.Errorf("read from file: %s -> %w", f, err)
+			}
+			si := NewSliceIterator(name, lines, roundRobin)
+			m.AddIter(si)
+		}
+
 	}
 
 	return nil
