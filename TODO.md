@@ -5,7 +5,7 @@
 - <s>Create `PersistTo` functionality for the Builder</s>
  
 ### Persisters
-- Write IniPersister
+- <s>Write IniPersister</s>
 
 #### ?? Persisters
 - Write YamlPersister (maybe)
