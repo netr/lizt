@@ -15,7 +15,6 @@ The major differences between the two iterators are:
 ### Builder Helper Examples
 You can use the `MustBuild` and `MustBuildWithSeeds` functions to create iterators. These functions will panic if there is an error.
 
-```go
 #### File Stream Iterator
 ```go
 stream, _ := lizt.NewBuilder().Stream("test/50000000.txt").Build() // round-robin = false
