@@ -84,7 +84,7 @@ fmt.Println(stream.Next(5))
 // "a", "b", "c", "e", "f"
 ```
 
-#### Slice Iterator with Persistence ( See `persist_test.go` for more examples )
+#### Slice Iterator with Persistence
 ```go
 mem := NewInMemoryPersister()
 stream, _ := lizt.B().Slice([]{"test","this","here"}).PersistTo(mem).Build() // round-robin = false
