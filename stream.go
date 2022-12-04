@@ -94,7 +94,6 @@ func (si *StreamIterator) SetPointer(p uint64) {
 	// we can assume if it reaches this line that the reader is not nil and the pointer is in a valid range.
 	si.unsafePointerPairing(p)
 	si.pointer.Store(p)
-	return
 }
 
 // unsafePointerPairing create a new reader and iterate through the lines until it reaches the pointer.

@@ -3,10 +3,11 @@ package persist
 import (
 	"errors"
 	"fmt"
-	"git.faze.center/netr/lizt"
-	"gopkg.in/ini.v1"
 	"os"
 	"sync"
+
+	"git.faze.center/netr/lizt"
+	"gopkg.in/ini.v1"
 )
 
 // IniPersister is a persister that uses an ini file
@@ -19,7 +20,7 @@ type IniPersister struct {
 
 // NewIniPersister creates a new thread-safe IniPersister instance using the given path
 func NewIniPersister(iniPath string) (*IniPersister, error) {
-	if lizt.DoesFileExist(iniPath) == false {
+	if !lizt.DoesFileExist(iniPath) {
 		_, err := os.Create(iniPath)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create ini file: %s -> %w", iniPath, err)

@@ -11,7 +11,6 @@ import (
 var IterKeySeeds = "seeds"
 
 type PointerIteratorBuilder struct {
-	path     string
 	seedIter *SeedingIterator
 	listIter PointerIterator
 }

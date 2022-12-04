@@ -63,7 +63,6 @@ func (si *SliceIterator) SetPointer(p uint64) {
 		return
 	}
 	si.pointer.Store(p)
-	return
 }
 
 // Inc increments the pointer.

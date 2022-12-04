@@ -1,9 +1,10 @@
 package bench_test
 
 import (
-	"git.faze.center/netr/lizt"
 	"testing"
 	"time"
+
+	"git.faze.center/netr/lizt"
 )
 
 var (
@@ -11,7 +12,6 @@ var (
 	filenameTenMillion   = "10000000.txt"
 	filenameFiftyMillion = "50000000.txt"
 	filenameTen          = "../test/10.txt"
-	useTimeReporting     = false
 )
 
 func Test_CreateLargeSeedData(t *testing.T) {

@@ -12,8 +12,8 @@ func TestCountLines(t *testing.T) {
 		t.Error(err)
 	}
 
-	if count != 999998 {
-		t.Error("Expected 999998 lines, got", count)
+	if count != 1000001 {
+		t.Error("Expected 1000001 lines, got", count)
 	}
 }
 
@@ -23,11 +23,11 @@ func TestRepeatLines(t *testing.T) {
 		t.Error(err)
 	}
 
-	count := 999998
+	count := 1000001
 	times := 10
 	rep := lizt.RepeatLines(lines, times)
 	if len(rep) != count*times {
-		t.Error("Expected", count*times, "lines, got", count)
+		t.Error("Expected", count*times, "lines, got", len(rep))
 	}
 }
 
