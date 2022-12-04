@@ -18,21 +18,23 @@ fmt.Println(stream.Next(5))
 
 #### Slice Iterator
 ```go
-slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to false for ease of use
+// creates a random string for it's name for ease of use
+
+slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Build() // round-robin = false
 fmt.Println(slice.Next(3))
 
-slice, _ := lizt.B().SliceRR([]string{"a", "b", "c", "d", "e"}).Build() // creates a random string name and round-robin to true for ease of use
+slice, _ := lizt.B().SliceRR([]string{"a", "b", "c", "d", "e"}).Build() // round-robin = true
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
 
 #### Slice Iterator With Name (Required if you're using a Manager)
 ```go
-slice, _ := lizt.B().SliceNamed("name", []string{"a", "b", "c", "d", "e"}).Build()
+slice, _ := lizt.B().SliceNamed("name", []string{"a", "b", "c", "d", "e"}).Build() // round-robin = false
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 
-slice, _ := lizt.B().SliceNamedRR("name", []string{"a", "b", "c", "d", "e"}).Build()
+slice, _ := lizt.B().SliceNamedRR("name", []string{"a", "b", "c", "d", "e"}).Build() // round-robin = true
 fmt.Println(slice.Next(3))
 // "a", "b", "c"
 ```
@@ -42,11 +44,11 @@ fmt.Println(slice.Next(3))
 plantEvery := 2
 seedStream, _ = lizt.B().
             Stream("test/10.txt").
-            BuildWithSeeds(plantEvery, []string{"seed1", "seed2"})
+            BuildWithSeeds(plantEvery, []string{"seed1", "seed2"}) // round-robin = false
 
 seedStream, _ = lizt.B().
             StreamRR("test/10.txt").
-            BuildWithSeeds(plantEvery, []string{"seed1", "seed2"})
+            BuildWithSeeds(plantEvery, []string{"seed1", "seed2"}) // round-robin = true
 
 fmt.Println(slice.Next(4))
 // "seed1", "a", "seed2", "b"
@@ -57,11 +59,11 @@ fmt.Println(slice.Next(4))
 plantEvery := 2
 seedStream, _ = lizt.B().
             Stream("test/10.txt").
-            BuildWithSeeds(plantEvery, "data/seeds.txt")
+            BuildWithSeeds(plantEvery, "data/seeds.txt") // round-robin = false
 
 seedStream, _ = lizt.B().
             StreamRR("test/10.txt").
-            BuildWithSeeds(plantEvery, "data/seeds.txt")
+            BuildWithSeeds(plantEvery, "data/seeds.txt") // round-robin = true
 
 fmt.Println(slice.Next(4))
 // "seed1", "a", "seed2", "b"
