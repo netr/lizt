@@ -47,7 +47,7 @@ func (m *Manager) Len() int {
 }
 
 // AddDirIter walks a directory of files, converts the files into SliceIterators, and adds them to the manager.
-// This will always be faster than SmarterAddDirIter(). However, it will not take size into account.
+// This will always be faster than SmartAddDirIter(). However, it will not take size into account.
 func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
 	if !strings.HasSuffix(dir, "/") {
 		dir += "/"
@@ -70,10 +70,10 @@ func (m *Manager) AddDirIter(dir string, roundRobin bool) error {
 	return nil
 }
 
-// SmarterAddDirIter walks a directory of files, converts the files into Iterators (while taking line count into account), and adds them to the manager.
+// SmartAddDirIter walks a directory of files, converts the files into Iterators (while taking line count into account), and adds them to the manager.
 // Files with less than 1000 lines will be SliceIterators, the rest will be StreamIterators.
 // This will always be slower than just running AddDirIter(), because we have to count the lines in each file.
-func (m *Manager) SmarterAddDirIter(dir string, roundRobin bool) error {
+func (m *Manager) SmartAddDirIter(dir string, roundRobin bool) error {
 	if !strings.HasSuffix(dir, "/") {
 		dir += "/"
 	}

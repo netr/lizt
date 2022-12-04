@@ -124,3 +124,31 @@ func TestManager_AddDirIter(t *testing.T) {
 		t.Errorf("expected 2, got %d", mgr.Len())
 	}
 }
+
+func TestManager_SmartAddDirIter(t *testing.T) {
+	mgr := lizt.NewManager()
+	err := mgr.SmartAddDirIter("test/", false)
+	if err != nil {
+		t.Errorf("SmartAddDirIter() error = %v", err)
+	}
+	if mgr.Len() != 2 {
+		t.Errorf("expected 2, got %d", mgr.Len())
+	}
+
+	millionIter, err := mgr.Get("1000000")
+	if err != nil {
+		t.Errorf("Get() error = %v", err)
+	}
+
+	if reflect.TypeOf(millionIter).Elem().Name() != "StreamIterator" {
+		t.Errorf("expected StreamIterator, got %s", reflect.TypeOf(millionIter).Name())
+	}
+
+	tenIter, err := mgr.Get("10")
+	if err != nil {
+		t.Errorf("Get() error = %v", err)
+	}
+	if reflect.TypeOf(tenIter).Elem().Name() != "SliceIterator" {
+		t.Errorf("expected SliceIterator, got %s", reflect.TypeOf(tenIter).Name())
+	}
+}
