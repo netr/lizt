@@ -1,6 +1,7 @@
 package lizt
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -49,43 +50,38 @@ func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
 }
 
 type SeedingIteratorBuilder struct {
-	path     string
+	every    int
 	seedIter *SeedingIterator
 	listIter PointerIterator
 }
 
-func (ib *PointerIteratorBuilder) WithSeeds(every int, seeds interface{}) *SeedingIteratorBuilder {
+func (ib *PointerIteratorBuilder) WithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
 	if ib.listIter == nil {
 		panic("no iterator")
 	}
 
-	si := &SeedingIteratorBuilder{
-		path:     ib.path,
-		listIter: ib.listIter,
-	}
 	switch reflect.TypeOf(seeds).Kind() {
 	case reflect.Slice:
-		si.seedIter = NewSeedingIterator(SeedingIteratorConfig{
-			PointerIter: nil,
+		return NewSeedingIterator(SeedingIteratorConfig{
+			PointerIter: ib.listIter,
 			SeedIter:    NewSliceIterator(IterKeySeeds, seeds.([]string), true),
 			PlantEvery:  every,
-		})
-		break
+		}), nil
 	case reflect.String:
 		stream, err := NewStreamIterator(fmt.Sprintf("%s", seeds), true)
 		if err != nil {
 			panic(err)
 		}
-		si.seedIter = NewSeedingIterator(SeedingIteratorConfig{
-			PointerIter: nil,
+		return NewSeedingIterator(SeedingIteratorConfig{
+			PointerIter: ib.listIter,
 			SeedIter:    stream,
 			PlantEvery:  every,
-		})
+		}), nil
 	}
-	return si
+	return nil, errors.New("invalid seeds type")
 }
 
-func (sb *SeedingIteratorBuilder) Build() (*SeedingIterator, error) {
-	sb.seedIter.PointerIterator = sb.listIter
+func (sb SeedingIteratorBuilder) Build() (*SeedingIterator, error) {
+	//sb.seedIter.PointerIterator = sb.listIter
 	return sb.seedIter, nil
 }

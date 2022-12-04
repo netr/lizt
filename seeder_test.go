@@ -46,7 +46,7 @@ func TestSeeder_Next_RoundRobin(t *testing.T) {
 	iter := lizt.NewSliceIterator(nameNumbers, numbers, true)
 
 	seeds := []string{"seeder1", "seeder2"}
-	seedIter := lizt.NewSliceIterator("seedIter", seeds, true)
+	seedIter := lizt.NewSliceIterator("seeds", seeds, true)
 
 	seed := lizt.NewSeedingIterator(
 		lizt.SeedingIteratorConfig{
