@@ -141,7 +141,7 @@ func main() {
 		panic(err)
 	}
 
-	// initialize and add seeder to manager
+	// initialize and add iterators to the manager
 	mgr := lizt.NewManager().AddIters(fiftyStream, numbersSlice)
 
 	_, err = mgr.MustGet(string(IterKeyFiftyMillion)).Next(4)
