@@ -5,6 +5,9 @@ type Iterator interface {
 	Name() string
 	Len() int
 	Next(count int) ([]string, error)
+	NextOne() (string, error)
+	MustNext(count int) []string
+	MustNextOne() string
 }
 
 // PointerIterator is an iterator that has a pointer.

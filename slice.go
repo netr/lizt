@@ -25,7 +25,7 @@ func NewSliceIterator(name string, lines []string, roundRobin bool) *SliceIterat
 	}
 }
 
-// Next returns the next line from the iterator.
+// Next returns the next lines, of a given count, from the iterator.
 func (si *SliceIterator) Next(count int) ([]string, error) {
 	si.mu.Lock()
 	defer si.mu.Unlock()
@@ -49,6 +49,33 @@ func (si *SliceIterator) Next(count int) ([]string, error) {
 		}
 	}
 	return lines, nil
+}
+
+// MustNext returns the next lines, of a given count, from the iterator. Panics on error.
+func (si *SliceIterator) MustNext(count int) []string {
+	lines, err := si.Next(count)
+	if err != nil {
+		panic(err)
+	}
+	return lines
+}
+
+// NextOne returns the next line from the iterator.
+func (si *SliceIterator) NextOne() (string, error) {
+	lines, err := si.Next(1)
+	if err != nil {
+		return "", err
+	}
+	return lines[0], nil
+}
+
+// MustNextOne returns the next line from the iterator. Panics on error.
+func (si *SliceIterator) MustNextOne() string {
+	line, err := si.NextOne()
+	if err != nil {
+		panic(err)
+	}
+	return line
 }
 
 // Pointer returns the current pointer.

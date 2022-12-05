@@ -79,6 +79,33 @@ func (si *StreamIterator) Next(count int) ([]string, error) {
 	return lines, nil
 }
 
+// MustNext returns the next lines, of a given count, from the iterator. Panics on error.
+func (si *StreamIterator) MustNext(count int) []string {
+	lines, err := si.Next(count)
+	if err != nil {
+		panic(err)
+	}
+	return lines
+}
+
+// NextOne returns the next line from the iterator.
+func (si *StreamIterator) NextOne() (string, error) {
+	lines, err := si.Next(1)
+	if err != nil {
+		return "", err
+	}
+	return lines[0], nil
+}
+
+// MustNextOne returns the next line from the iterator. Panics on error.
+func (si *StreamIterator) MustNextOne() string {
+	line, err := si.NextOne()
+	if err != nil {
+		panic(err)
+	}
+	return line
+}
+
 // Pointer returns the current pointer.
 func (si *StreamIterator) Pointer() uint64 {
 	return si.pointer.Load()
