@@ -39,3 +39,30 @@ func (pi *PersistentIterator) Next(count int) ([]string, error) {
 	}
 	return next, nil
 }
+
+// MustNext returns the next lines, of a given count, from the iterator. Panics on error.
+func (pi *PersistentIterator) MustNext(count int) []string {
+	lines, err := pi.Next(count)
+	if err != nil {
+		panic(err)
+	}
+	return lines
+}
+
+// NextOne returns the next line from the iterator.
+func (pi *PersistentIterator) NextOne() (string, error) {
+	lines, err := pi.Next(1)
+	if err != nil {
+		return "", err
+	}
+	return lines[0], nil
+}
+
+// MustNextOne returns the next line from the iterator. Panics on error.
+func (pi *PersistentIterator) MustNextOne() string {
+	line, err := pi.NextOne()
+	if err != nil {
+		panic(err)
+	}
+	return line
+}
