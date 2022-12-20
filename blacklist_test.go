@@ -1,7 +1,6 @@
 package lizt_test
 
 import (
-	"fmt"
 	"testing"
 
 	"git.faze.center/netr/lizt"
@@ -73,8 +72,6 @@ func TestScrubFileWithBlacklist(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-
-	fmt.Println(scrubbed)
 
 	expected := []string{"a", "c", "e", "g", "i"}
 	for k, v := range expected {
