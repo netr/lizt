@@ -53,10 +53,6 @@ func (bi *BlacklistingIterator) IsBlacklisted(line string) bool {
 	return ok
 }
 
-func removeSlice(slice []string, s int) []string {
-	return append(slice[:s], slice[s+1:]...)
-}
-
 // MustNext returns the next lines, of a given count, from the iterator. Panics on error.
 func (bi *BlacklistingIterator) MustNext(count int) []string {
 	lines, err := bi.Next(count)
