@@ -40,6 +40,15 @@ func ReadFromFile(filename string) ([]string, error) {
 	return lines, nil
 }
 
+// DeleteFile takes a path and deletes the file
+func DeleteFile(path string) error {
+	err := os.Remove(path)
+	if err != nil {
+		return fmt.Errorf("os.Remove(): %s -> %w", path, err)
+	}
+	return nil
+}
+
 // FileLineCount returns the number of lines in a file
 func FileLineCount(filename string) (int, error) {
 	file, err := OpenFile(filename)
@@ -101,6 +110,11 @@ func WriteToFile(lines []string, filename string) error {
 			return fmt.Errorf("writer.WriteString(): %s -> %w", filename, err)
 		}
 	}
+
+	if err = writer.Flush(); err != nil {
+		return fmt.Errorf("writer.Flush(): %s -> %w", filename, err)
+	}
+
 	return nil
 }
 

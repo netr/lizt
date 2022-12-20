@@ -1,6 +1,9 @@
 package lizt
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 // BlacklistingIterator is an iterator that skips blacklists while iterating.
 type BlacklistingIterator struct {
@@ -78,4 +81,40 @@ func (bi *BlacklistingIterator) MustNextOne() string {
 		panic(err)
 	}
 	return line
+}
+
+// ScrubFileWithBlacklist iterates over every line in a file and saves to a new file with the blacklisted lines removed.
+func ScrubFileWithBlacklist(blacklistPath, sourcePath, destPath string) error {
+	blacklist, err := ReadFromFile(blacklistPath)
+	if err != nil {
+		return fmt.Errorf("read blacklist: %w", err)
+	}
+
+	blkMap := make(map[string]struct{}, len(blacklist))
+	for _, bl := range blacklist {
+		blkMap[bl] = struct{}{}
+	}
+
+	// Read from source file
+	source, err := ReadFromFile(sourcePath)
+	if err != nil {
+		return fmt.Errorf("read source: %w", err)
+	}
+
+	// Write to dest file
+	dest, err := os.Create(destPath)
+	if err != nil {
+		return fmt.Errorf("create dest: %w", err)
+	}
+
+	for _, line := range source {
+		if _, ok := blkMap[line]; !ok {
+			_, err := dest.WriteString(line + "\n")
+			if err != nil {
+				return fmt.Errorf("write line: %w", err)
+			}
+		}
+	}
+
+	return nil
 }
