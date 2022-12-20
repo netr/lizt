@@ -57,16 +57,18 @@ func TestBlacklister_Next_ShouldNotReturnZeroEntriesIfItRemovesAllOfThem(t *test
 }
 
 func TestScrubFileWithBlacklist(t *testing.T) {
-	blacklist := []string{"b", "d", "f", "h", "j"}
+	blkMap := map[string]struct{}{
+		"b": {}, "d": {}, "f": {}, "h": {}, "j": {},
+	}
 
-	err := lizt.WriteToFile(blacklist, "test/blacklist.txt")
+	// blkMap, err := lizt.FileTomap("test/blacklist.txt", blkMap)
+
+	n, err := lizt.ScrubFileWithBlacklist(blkMap, "test/10.txt", "test/10.txt.scrubbed")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-
-	err = lizt.ScrubFileWithBlacklist("test/blacklist.txt", "test/10.txt", "test/10.txt.scrubbed")
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
+	if n != 5 {
+		t.Fatalf("Expected 5 lines scrubbed, got %d", n)
 	}
 
 	scrubbed, err := lizt.ReadFromFile("test/10.txt.scrubbed")
@@ -81,14 +83,8 @@ func TestScrubFileWithBlacklist(t *testing.T) {
 		}
 	}
 
-	err = lizt.DeleteFile("test/blacklist.txt")
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-
 	err = lizt.DeleteFile("test/10.txt.scrubbed")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-
 }

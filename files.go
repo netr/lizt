@@ -49,6 +49,19 @@ func DeleteFile(path string) error {
 	return nil
 }
 
+func FileToMap(pathname string) (map[string]struct{}, error) {
+	lines, err := ReadFromFile(pathname)
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[string]struct{}, len(lines))
+	for _, l := range lines {
+		m[l] = struct{}{}
+	}
+	return m, nil
+}
+
 // FileLineCount returns the number of lines in a file
 func FileLineCount(filename string) (int, error) {
 	file, err := OpenFile(filename)

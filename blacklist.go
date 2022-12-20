@@ -3,6 +3,7 @@ package lizt
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 // BlacklistingIterator is an iterator that skips blacklists while iterating.
@@ -84,37 +85,32 @@ func (bi *BlacklistingIterator) MustNextOne() string {
 }
 
 // ScrubFileWithBlacklist iterates over every line in a file and saves to a new file with the blacklisted lines removed.
-func ScrubFileWithBlacklist(blacklistPath, sourcePath, destPath string) error {
-	blacklist, err := ReadFromFile(blacklistPath)
-	if err != nil {
-		return fmt.Errorf("read blacklist: %w", err)
-	}
-
-	blkMap := make(map[string]struct{}, len(blacklist))
-	for _, bl := range blacklist {
-		blkMap[bl] = struct{}{}
-	}
-
+func ScrubFileWithBlacklist(blkMap map[string]struct{}, sourcePath, destPath string) (n int, err error) {
 	// Read from source file
 	source, err := ReadFromFile(sourcePath)
 	if err != nil {
-		return fmt.Errorf("read source: %w", err)
+		return 0, fmt.Errorf("read source: %w", err)
 	}
 
 	// Write to dest file
 	dest, err := os.Create(destPath)
 	if err != nil {
-		return fmt.Errorf("create dest: %w", err)
+		return 0, fmt.Errorf("create dest: %w", err)
 	}
 
+	sb := strings.Builder{}
 	for _, line := range source {
 		if _, ok := blkMap[line]; !ok {
-			_, err := dest.WriteString(line + "\n")
-			if err != nil {
-				return fmt.Errorf("write line: %w", err)
-			}
+			sb.WriteString(line + "\n")
+		} else {
+			n++
 		}
 	}
 
-	return nil
+	_, err = dest.WriteString(sb.String())
+	if err != nil {
+		return 0, fmt.Errorf("write line: %w", err)
+	}
+
+	return n, nil
 }

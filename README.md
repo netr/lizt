@@ -125,8 +125,9 @@ fmt.Println(slice.Next(3)) // "b", "d", "e"
 
 ## Blacklist helper function
 ```go
-// blacklist, source, dest
-err = lizt.ScrubFileWithBlacklist("test/blacklist.txt", "test/10.txt", "test/10.txt.scrubbed")
+// this is good to do so you can reuse the memory
+bl := lizt.FileToMap("test/blacklist.txt")
+err = lizt.ScrubFileWithBlacklist(bl, "test/10.txt", "test/10.txt.scrubbed")
 if err != nil {
     t.Errorf("Expected no error, got %v", err)
 }
