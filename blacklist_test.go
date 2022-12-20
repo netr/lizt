@@ -58,6 +58,7 @@ func TestBlacklister_Next_ShouldNotReturnZeroEntriesIfItRemovesAllOfThem(t *test
 
 func TestScrubFileWithBlacklist(t *testing.T) {
 	blacklist := []string{"b", "d", "f", "h", "j"}
+
 	err := lizt.WriteToFile(blacklist, "test/blacklist.txt")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
@@ -84,6 +85,7 @@ func TestScrubFileWithBlacklist(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
+
 	err = lizt.DeleteFile("test/10.txt.scrubbed")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
