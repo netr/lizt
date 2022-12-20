@@ -11,8 +11,9 @@ import (
 var IterKeySeeds = "seeds"
 
 type PointerIteratorBuilder struct {
-	seedIter *SeedingIterator
-	listIter PointerIterator
+	seedIter      *SeedingIterator
+	blacklistIter *BlacklistingIterator
+	listIter      PointerIterator
 }
 
 func NewBuilder() *PointerIteratorBuilder {
@@ -67,6 +68,19 @@ func (ib *PointerIteratorBuilder) SliceNamedRR(name string, lines []string) *Poi
 	return ib
 }
 
+// Blacklist creates a new BlacklistingIterator
+func (ib *PointerIteratorBuilder) Blacklist(lines []string) *PointerIteratorBuilder {
+	var err error
+	ib.blacklistIter, err = NewBlacklistingIterator(BlacklistingIteratorConfig{
+		PointerIter: ib.listIter,
+		Blacklisted: lines,
+	})
+	if err != nil {
+		panic(err)
+	}
+	return ib
+}
+
 var (
 	ErrNoIterator      = errors.New("no iterator")
 	ErrInvalidSeedType = errors.New("invalid seed type")
@@ -76,6 +90,11 @@ var (
 func (ib *PointerIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (*SeedingIterator, error) {
 	if ib.listIter == nil {
 		return nil, fmt.Errorf("builder: %w", ErrNoIterator)
+	}
+
+	if ib.blacklistIter != nil {
+		ib.blacklistIter.PointerIterator = ib.listIter
+		ib.listIter = ib.blacklistIter
 	}
 
 	switch reflect.TypeOf(seeds).Kind() {
@@ -111,6 +130,11 @@ func (ib *PointerIteratorBuilder) MustBuildWithSeeds(every int, seeds interface{
 
 // Build will build a pointer iterator with the given iterators.
 func (ib *PointerIteratorBuilder) Build() (PointerIterator, error) {
+	if ib.blacklistIter != nil {
+		ib.blacklistIter.PointerIterator = ib.listIter
+		ib.listIter = ib.blacklistIter
+	}
+
 	if ib.seedIter != nil {
 		ib.seedIter.PointerIterator = ib.listIter
 		return ib.seedIter, nil
@@ -147,10 +171,28 @@ func (ib *PointerIteratorBuilder) PersistTo(p Persister) *PersistentIteratorBuil
 	return pib
 }
 
+// Blacklist creates a new BlacklistingIterator
+func (ib *PersistentIteratorBuilder) Blacklist(lines []string) *PersistentIteratorBuilder {
+	var err error
+	ib.blacklistIter, err = NewBlacklistingIterator(BlacklistingIteratorConfig{
+		PointerIter: ib.listIter,
+		Blacklisted: lines,
+	})
+	if err != nil {
+		panic(err)
+	}
+	return ib
+}
+
 // BuildWithSeeds will build a persistent iterator with the given persister and seeds.
 func (ib *PersistentIteratorBuilder) BuildWithSeeds(every int, seeds interface{}) (*PersistentIterator, error) {
 	if ib.listIter == nil {
 		return nil, fmt.Errorf("builder: %w", ErrNoIterator)
+	}
+
+	if ib.blacklistIter != nil {
+		ib.blacklistIter.PointerIterator = ib.listIter
+		ib.listIter = ib.blacklistIter
 	}
 
 	switch reflect.TypeOf(seeds).Kind() {
@@ -203,6 +245,11 @@ func (ib *PersistentIteratorBuilder) MustBuildWithSeeds(every int, seeds interfa
 
 // Build will build a persistent iterato with the given persister.
 func (ib *PersistentIteratorBuilder) Build() (*PersistentIterator, error) {
+	if ib.blacklistIter != nil {
+		ib.blacklistIter.PointerIterator = ib.listIter
+		ib.listIter = ib.blacklistIter
+	}
+
 	if ib.seedIter != nil {
 		ib.seedIter.PointerIterator = ib.listIter
 		per, err := NewPersistentIterator(PersistentIteratorConfig{
