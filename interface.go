@@ -29,3 +29,9 @@ type Persister interface {
 	Set(key string, value uint64) error
 	Get(key string) (uint64, error)
 }
+
+// Blacklister adds blacklisting capabilities to an iterator
+type Blacklister interface {
+	Blacklist() map[string]struct{}
+	IsBlacklisted(string) bool
+}
