@@ -1,8 +1,10 @@
 package lizt_test
 
 import (
-	"git.faze.center/netr/lizt"
+	"fmt"
 	"testing"
+
+	"git.faze.center/netr/lizt"
 )
 
 func TestBlacklister_Next(t *testing.T) {
@@ -53,4 +55,41 @@ func TestBlacklister_Next_ShouldNotReturnZeroEntriesIfItRemovesAllOfThem(t *test
 			t.Errorf("Expected %s, got %s", v, next[k])
 		}
 	}
+}
+
+func TestScrubFileWithBlacklist(t *testing.T) {
+	blacklist := []string{"b", "d", "f", "h", "j"}
+	err := lizt.WriteToFile(blacklist, "test/blacklist.txt")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+
+	err = lizt.ScrubFileWithBlacklist("test/blacklist.txt", "test/10.txt", "test/10.txt.scrubbed")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+
+	scrubbed, err := lizt.ReadFromFile("test/10.txt.scrubbed")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+
+	fmt.Println(scrubbed)
+
+	expected := []string{"a", "c", "e", "g", "i"}
+	for k, v := range expected {
+		if scrubbed[k] != v {
+			t.Errorf("Expected %s, got %s", v, scrubbed[k])
+		}
+	}
+
+	err = lizt.DeleteFile("test/blacklist.txt")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+	err = lizt.DeleteFile("test/10.txt.scrubbed")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+
 }
