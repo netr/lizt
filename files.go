@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 )
 
 // OpenFile opens a file
@@ -117,11 +118,14 @@ func WriteToFile(lines []string, filename string) error {
 	defer file.Close()
 
 	writer := bufio.NewWriter(file)
+	sb := &strings.Builder{}
 	for _, line := range lines {
-		_, err := writer.WriteString(line + "\n")
-		if err != nil {
-			return fmt.Errorf("writer.WriteString(): %s -> %w", filename, err)
-		}
+		sb.WriteString(line + "	\n")
+	}
+
+	_, err = writer.WriteString(sb.String())
+	if err != nil {
+		return fmt.Errorf("writer.WriteString(): %s -> %w", filename, err)
 	}
 
 	if err = writer.Flush(); err != nil {
