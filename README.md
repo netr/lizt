@@ -113,6 +113,16 @@ fmt.Println(stream.Next(5)) // "seed1", "a", "seed2", "b", "seed1"
 // Persister Value => mem["10"] = 2
 ```
 
+
+#### Slice Iterator with Blacklist
+```go
+// creates a random string for it's name for ease of use
+
+slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Blacklist([]string("a", "c").Build() // round-robin = false
+
+fmt.Println(slice.Next(3)) // "b", "d", "e"
+```
+
 ## Using the Manager
 
 When using the manager, you must use `SliceNamed` and `SliceNamedRR`. The manager requires a name to properly use it's `Get` and `MustGet` functions. 

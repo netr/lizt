@@ -32,8 +32,8 @@ func NewBlacklistingIterator(cfg BlacklistingIteratorConfig) (*BlacklistingItera
 // Next returns the next line from the iterator.
 func (bi *BlacklistingIterator) Next(count int) ([]string, error) {
 	var clean []string
-	for {
-		next, err := bi.PointerIterator.Next(count)
+	for len(clean) < count {
+		next, err := bi.PointerIterator.Next(count - len(clean))
 		if err != nil {
 			return nil, fmt.Errorf("next: name: %s -> %w", bi.Name(), err)
 		}
@@ -42,10 +42,6 @@ func (bi *BlacklistingIterator) Next(count int) ([]string, error) {
 			if !bi.IsBlacklisted(n) {
 				clean = append(clean, n)
 			}
-		}
-
-		if len(clean) > 0 {
-			break
 		}
 	}
 	return clean, nil
