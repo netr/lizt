@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 )
 
 // BlacklistingIterator is an iterator that skips blacklists while iterating.
@@ -109,4 +110,65 @@ func ScrubFileWithBlacklist(blkMap map[string]struct{}, sourcePath, destPath str
 	}
 
 	return n, nil
+}
+
+type BlacklistManager struct {
+	mu       sync.Mutex
+	items    map[string]struct{}
+	savePath string
+}
+
+func NewBlacklistManager(items map[string]struct{}, savePath string) *BlacklistManager {
+	return &BlacklistManager{
+		items:    items,
+		savePath: savePath,
+	}
+}
+
+// Has returns true if the given string is in the list
+func (l *BlacklistManager) Has(who string) bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	_, ok := l.items[who]
+	return ok
+}
+
+// Map returns the map of items in the list
+func (l *BlacklistManager) Map() map[string]struct{} {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	return l.items
+}
+
+// Path returns the path to the file where the list is saved
+func (l *BlacklistManager) Path() string {
+	return l.savePath
+}
+
+// Add adds a string to the list and appends to a file at the given path
+func (l *BlacklistManager) Add(who string) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	if _, ok := l.items[who]; ok {
+		return fmt.Errorf("already in list")
+	}
+
+	l.items[who] = struct{}{}
+	return nil
+}
+
+// ToStringSlice returns a slice of strings from the list
+func (l *BlacklistManager) ToStringSlice() []string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	var items []string
+	for item := range l.items {
+		items = append(items, item)
+	}
+
+	return items
 }
