@@ -164,7 +164,7 @@ func Test_NewIteratorBuilder_PersistTo_Stream_WithSeeds(t *testing.T) {
 // it will shift the seeds around a bit. This is fine for now, but I'd like to find a way to keep the seeds in the right order.
 func Test_NewIteratorBuilder_PersistTo_Blacklist_Stream_WithSeeds(t *testing.T) {
 	mem := NewInMemoryPersister()
-	blacklist := []string{"a", "b", "c"}
+	blacklist := map[string]struct{}{"a": {}, "b": {}, "c": {}}
 
 	si, err := lizt.B().
 		StreamRR("test/10.txt").

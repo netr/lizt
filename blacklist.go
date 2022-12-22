@@ -16,18 +16,14 @@ type BlacklistingIterator struct {
 // BlacklistingIteratorConfig is the config for a blacklisting iterator.
 type BlacklistingIteratorConfig struct {
 	PointerIter PointerIterator
-	Blacklisted []string
+	Blacklisted map[string]struct{}
 }
 
 // NewBlacklistingIterator returns a new persistent iterator. It will set the pointer to the last known pointer.
 func NewBlacklistingIterator(cfg BlacklistingIteratorConfig) (*BlacklistingIterator, error) {
 	blkIter := &BlacklistingIterator{
 		PointerIterator: cfg.PointerIter,
-		blacklist:       make(map[string]struct{}, len(cfg.Blacklisted)),
-	}
-
-	for _, bl := range cfg.Blacklisted {
-		blkIter.blacklist[bl] = struct{}{}
+		blacklist:       cfg.Blacklisted,
 	}
 
 	return blkIter, nil

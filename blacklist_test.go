@@ -8,7 +8,7 @@ import (
 
 func TestBlacklister_Next(t *testing.T) {
 	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
-	blacklist := []string{"2", "4", "6", "8", "10"}
+	blacklist := map[string]struct{}{"2": {}, "4": {}, "6": {}, "8": {}, "10": {}}
 	blkIter, _ := lizt.B().Slice(numbers).Blacklist(blacklist).Build()
 
 	next, err := blkIter.Next(5)
@@ -33,7 +33,7 @@ func TestBlacklister_Next(t *testing.T) {
 
 func TestBlacklister_Next_ShouldNotReturnZeroEntriesIfItRemovesAllOfThem(t *testing.T) {
 	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
-	blacklist := []string{"1", "2", "3", "4", "5"}
+	blacklist := map[string]struct{}{"1": {}, "2": {}, "3": {}, "4": {}, "5": {}}
 	blkIter, _ := lizt.B().Slice(numbers).Blacklist(blacklist).Build()
 
 	next, err := blkIter.Next(5)
