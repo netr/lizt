@@ -31,6 +31,15 @@ func NewManager() *Manager {
 	}
 }
 
+// List returns a list of the names of the iterators.
+func (m *Manager) List() []string {
+	var names []string
+	for name := range m.files {
+		names = append(names, name)
+	}
+	return names
+}
+
 // AddIter adds an iterator to the manager.
 func (m *Manager) AddIter(i Iterator) *Manager {
 	m.files[i.Name()] = i
