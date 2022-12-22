@@ -92,3 +92,56 @@ func TestScrubFileWithBlacklist(t *testing.T) {
 		t.Errorf("Expected no error, got %v", err)
 	}
 }
+
+func TestBlacklistManager_ShouldWorkAsExpected(t *testing.T) {
+	blkMap := lizt.BlacklistMap{
+		"b": {}, "d": {}, "f": {}, "h": {}, "j": {},
+	}
+	blkMgr := lizt.NewBlacklistManager(blkMap)
+	if blkMgr.Has("b") != true {
+		t.Errorf("Expected true, got false")
+	}
+	if blkMgr.Has("a") != false {
+		t.Errorf("Expected false, got true")
+	}
+	if err := blkMgr.Add("test"); err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+	if blkMgr.Has("test") != true {
+		t.Errorf("Expected true, got false")
+	}
+
+	if blkMgr.Len() != 6 {
+		t.Errorf("Expected 6, got %d", len(blkMgr.Map()))
+	}
+}
+
+func TestBlacklistManager_Remove_ShouldWorkAsExpected(t *testing.T) {
+	blkMap := lizt.BlacklistMap{
+		"b": {}, "d": {}, "f": {}, "h": {}, "j": {},
+	}
+	blkMgr := lizt.NewBlacklistManager(blkMap)
+
+	if blkMgr.Has("b") != true {
+		t.Errorf("Expected true, got false")
+	}
+
+	if err := blkMgr.Remove("b"); err != nil {
+		t.Errorf("Expected false, got true")
+	}
+
+	if blkMgr.Has("b") != false {
+		t.Errorf("Expected false, got true")
+	}
+
+}
+
+func TestBlacklistManager_Remove_ShouldErrorRemovingItemThatsNotFound(t *testing.T) {
+	blkMap := lizt.BlacklistMap{
+		"b": {}, "d": {}, "f": {}, "h": {}, "j": {},
+	}
+	blkMgr := lizt.NewBlacklistManager(blkMap)
+	if err := blkMgr.Remove("p"); err == nil {
+		t.Errorf("Expected error, got nil")
+	}
+}

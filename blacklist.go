@@ -154,6 +154,27 @@ func (l *BlacklistManager) Add(who string) error {
 	return nil
 }
 
+// Len returns the length of the list
+func (l *BlacklistManager) Len() int {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	return len(l.items)
+}
+
+// Remove removes a string from the list
+func (l *BlacklistManager) Remove(who string) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	if _, ok := l.items[who]; !ok {
+		return fmt.Errorf("not in list")
+	}
+
+	delete(l.items, who)
+	return nil
+}
+
 // ToStringSlice returns a slice of strings from the list
 func (l *BlacklistManager) ToStringSlice() []string {
 	l.mu.Lock()
