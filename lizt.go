@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sort"
 	"strings"
 )
 
@@ -37,6 +38,8 @@ func (m *Manager) List() []string {
 	for name := range m.files {
 		names = append(names, name)
 	}
+
+	sort.Strings(names)
 	return names
 }
 
