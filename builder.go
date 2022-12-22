@@ -69,11 +69,11 @@ func (ib *PointerIteratorBuilder) SliceNamedRR(name string, lines []string) *Poi
 }
 
 // Blacklist creates a new BlacklistingIterator
-func (ib *PointerIteratorBuilder) Blacklist(lines map[string]struct{}) *PointerIteratorBuilder {
+func (ib *PointerIteratorBuilder) Blacklist(bl *BlacklistManager) *PointerIteratorBuilder {
 	var err error
 	ib.blacklistIter, err = NewBlacklistingIterator(BlacklistingIteratorConfig{
 		PointerIter: ib.listIter,
-		Blacklisted: lines,
+		Blacklisted: bl,
 	})
 	if err != nil {
 		panic(err)
@@ -172,11 +172,11 @@ func (ib *PointerIteratorBuilder) PersistTo(p Persister) *PersistentIteratorBuil
 }
 
 // Blacklist creates a new BlacklistingIterator
-func (ib *PersistentIteratorBuilder) Blacklist(lines map[string]struct{}) *PersistentIteratorBuilder {
+func (ib *PersistentIteratorBuilder) Blacklist(bl *BlacklistManager) *PersistentIteratorBuilder {
 	var err error
 	ib.blacklistIter, err = NewBlacklistingIterator(BlacklistingIteratorConfig{
 		PointerIter: ib.listIter,
-		Blacklisted: lines,
+		Blacklisted: bl,
 	})
 	if err != nil {
 		panic(err)

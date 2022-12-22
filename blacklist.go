@@ -11,13 +11,13 @@ import (
 type BlacklistingIterator struct {
 	Blacklister
 	PointerIterator
-	blacklist map[string]struct{}
+	blacklist *BlacklistManager
 }
 
 // BlacklistingIteratorConfig is the config for a blacklisting iterator.
 type BlacklistingIteratorConfig struct {
 	PointerIter PointerIterator
-	Blacklisted map[string]struct{}
+	Blacklisted *BlacklistManager
 }
 
 // NewBlacklistingIterator returns a new persistent iterator. It will set the pointer to the last known pointer.
@@ -50,8 +50,7 @@ func (bi *BlacklistingIterator) Next(count int) ([]string, error) {
 
 // IsBlacklisted returns true if the given line is blacklisted.
 func (bi *BlacklistingIterator) IsBlacklisted(line string) bool {
-	_, ok := bi.blacklist[line]
-	return ok
+	return bi.blacklist.Has(line)
 }
 
 // MustNext returns the next lines, of a given count, from the iterator. Panics on error.
@@ -113,15 +112,13 @@ func ScrubFileWithBlacklist(blkMap map[string]struct{}, sourcePath, destPath str
 }
 
 type BlacklistManager struct {
-	mu       sync.Mutex
-	items    map[string]struct{}
-	savePath string
+	mu    sync.Mutex
+	items map[string]struct{}
 }
 
-func NewBlacklistManager(items map[string]struct{}, savePath string) *BlacklistManager {
+func NewBlacklistManager(items map[string]struct{}) *BlacklistManager {
 	return &BlacklistManager{
-		items:    items,
-		savePath: savePath,
+		items: items,
 	}
 }
 
@@ -140,11 +137,6 @@ func (l *BlacklistManager) Map() map[string]struct{} {
 	defer l.mu.Unlock()
 
 	return l.items
-}
-
-// Path returns the path to the file where the list is saved
-func (l *BlacklistManager) Path() string {
-	return l.savePath
 }
 
 // Add adds a string to the list and appends to a file at the given path

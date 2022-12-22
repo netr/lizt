@@ -165,10 +165,11 @@ func Test_NewIteratorBuilder_PersistTo_Stream_WithSeeds(t *testing.T) {
 func Test_NewIteratorBuilder_PersistTo_Blacklist_Stream_WithSeeds(t *testing.T) {
 	mem := NewInMemoryPersister()
 	blacklist := map[string]struct{}{"a": {}, "b": {}, "c": {}}
+	blm := lizt.NewBlacklistManager(blacklist)
 
 	si, err := lizt.B().
 		StreamRR("test/10.txt").
-		Blacklist(blacklist).
+		Blacklist(blm).
 		PersistTo(mem).
 		BuildWithSeeds(2, []string{"seed1", "seed2", "seed3"})
 	if err != nil {
