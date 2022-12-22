@@ -117,8 +117,9 @@ fmt.Println(stream.Next(5)) // "seed1", "a", "seed2", "b", "seed1"
 #### Slice Iterator with Blacklist
 ```go
 // creates a random string for it's name for ease of use
-
-slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Blacklist([]string("a", "c").Build() // round-robin = false
+bl := map[string]struct{}{"a": {}, "c": {}}
+blm := lizt.NewBlacklistManager(bl)
+slice, _ := lizt.B().Slice([]string{"a", "b", "c", "d", "e"}).Blacklist(blm).Build() // round-robin = false
 
 fmt.Println(slice.Next(3)) // "b", "d", "e"
 ```

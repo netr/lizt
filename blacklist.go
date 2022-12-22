@@ -81,7 +81,7 @@ func (bi *BlacklistingIterator) MustNextOne() string {
 }
 
 // ScrubFileWithBlacklist iterates over every line in a file and saves to a new file with the blacklisted lines removed.
-func ScrubFileWithBlacklist(blkMap map[string]struct{}, sourcePath, destPath string) (n int, err error) {
+func ScrubFileWithBlacklist(blkMap BlacklistMap, sourcePath, destPath string) (n int, err error) {
 	// Read from source file
 	source, err := ReadFromFile(sourcePath)
 	if err != nil {
@@ -111,12 +111,14 @@ func ScrubFileWithBlacklist(blkMap map[string]struct{}, sourcePath, destPath str
 	return n, nil
 }
 
+type BlacklistMap map[string]struct{}
+
 type BlacklistManager struct {
 	mu    sync.Mutex
-	items map[string]struct{}
+	items BlacklistMap
 }
 
-func NewBlacklistManager(items map[string]struct{}) *BlacklistManager {
+func NewBlacklistManager(items BlacklistMap) *BlacklistManager {
 	return &BlacklistManager{
 		items: items,
 	}
@@ -132,7 +134,7 @@ func (l *BlacklistManager) Has(who string) bool {
 }
 
 // Map returns the map of items in the list
-func (l *BlacklistManager) Map() map[string]struct{} {
+func (l *BlacklistManager) Map() BlacklistMap {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 

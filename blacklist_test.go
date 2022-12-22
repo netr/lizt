@@ -8,7 +8,7 @@ import (
 
 func TestBlacklister_Next(t *testing.T) {
 	numbers := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
-	blacklist := map[string]struct{}{"2": {}, "4": {}, "6": {}, "8": {}, "10": {}}
+	blacklist := lizt.BlacklistMap{"2": {}, "4": {}, "6": {}, "8": {}, "10": {}}
 	blm := lizt.NewBlacklistManager(blacklist)
 
 	blkIter, _ := lizt.B().Slice(numbers).Blacklist(blm).Build()
@@ -61,7 +61,7 @@ func TestBlacklister_Next_ShouldNotReturnZeroEntriesIfItRemovesAllOfThem(t *test
 }
 
 func TestScrubFileWithBlacklist(t *testing.T) {
-	blkMap := map[string]struct{}{
+	blkMap := lizt.BlacklistMap{
 		"b": {}, "d": {}, "f": {}, "h": {}, "j": {},
 	}
 
