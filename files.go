@@ -30,7 +30,7 @@ func ReadFromFile(filename string) ([]string, error) {
 	}
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines[idx] = scanner.Text()
+		lines[idx] = strings.TrimSpace(scanner.Text())
 		idx++
 	}
 
@@ -120,7 +120,7 @@ func WriteToFile(lines []string, filename string) error {
 	writer := bufio.NewWriter(file)
 	sb := &strings.Builder{}
 	for _, line := range lines {
-		sb.WriteString(line + "	\n")
+		sb.WriteString(line + "\n")
 	}
 
 	_, err = writer.WriteString(sb.String())
